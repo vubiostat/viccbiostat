@@ -1,4 +1,4 @@
-library(Gmisc)
+library(VICCBiostat)
 
 # 0
 info.test(rep(0,5), rep(1,5))
