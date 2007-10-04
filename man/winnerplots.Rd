@@ -5,7 +5,7 @@
 Plot the average spectra for a set of winners.  A multi-variate version of \code{\link{winnerplot}}.
 }
 \usage{
-winnerplots(data, winners, legend = NULL, bins = NULL, lty = par("lty"), lwd = par("lwd"), col = par("col"), \dots)
+winnerplots(data, winners, legend = NULL, bins = NULL, lty = 1, lwd = 1, col = 1:6, \dots)
 }
 \arguments{
     \item{data}{numeric matrix of average spectra data.  The first column should be the x coordinates (mass) and each subsequent column should be y coordinates.}
