@@ -11,10 +11,10 @@ scoredensityplot(x, y, z = NULL, main = NULL, legend = NULL, boxplots = TRUE, sp
     \item{x,y}{numeric vectors of score data for density and box plotting.}
     \item{z}{numeric, vector of scores to plot as vertical lines.}
     \item{main}{a main title for the plot, see also \code{\link{title}}.}
-    \item{legend}{a character or expression vector of length >= 1 to appear in the legend.}
+    \item{legend}{a character or expression vector of length >= 1 to appear in the legend.  If \code{NULL}, the legend is not displayed.}
     \item{boxplots}{logical. If \code{TRUE}, include the boxplots of \code{x} and \code{y} above the density plot.}
     \item{split.screen}{logical.  If \code{TRUE}, put the density and box plots on a single device with two rows.}
-    \item{type}{character string (length 1 vector)  or vector of 1-character strings indicating the type of plot for \code{x}, \code{y}, and each element of \code{z}, see \code{\link{}plot} for all possible \code{\link{type}}s.  The first character of \code{\link{type}} defines \code{x}, the second character \code{y}.  Characters in \code{\link{type}} are cycled through.}
+    \item{type}{character string (length 1 vector)  or vector of 1-character strings indicating the type of plot for \code{x}, \code{y}, and each element of \code{z}, see \code{\link{plot}} for all possible \code{\link{type}}s.  The first character of \code{\link{type}} defines \code{x}, the second character \code{y}.  Characters in \code{\link{type}} are cycled through.}
     \item{lty,lwd}{vector of line types and widths.  The first element is for \code{x}, the second element for \code{y}, and remaining elements are cycled through for \code{z}, even if lines are not plotted for elements.}
     \item{pch}{character string or vector of 1-characters or integers for plotting characters, see \code{\link{points}}.  The first character is the plotting-character for \code{x}, the second for \code{y}, and the remaining are cycled through for \code{z}.  The default is the digits (1 through 9, 0) then the letters.}
     \item{col}{vector of colors.  Colors are used cyclically except for the first two.}
@@ -37,9 +37,5 @@ Vanderbilt University\cr
 }
 \seealso{
 \code{\link{multidensityplot}}
-}
-\examples{
-\dontshow{
-}
 }
 \keyword{hplot}
