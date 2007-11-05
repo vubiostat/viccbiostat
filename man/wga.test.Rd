@@ -2,25 +2,20 @@
 \alias{wga.test}
 \title{Weighted Gene Analysis}
 \description{
-Uses the NIH's Weighted Method to determine differentially expressed biomarkers.
+  Uses the NIH's Weighted Method to determine differentially expressed biomarkers.
 }
 \usage{
-wga.test(x, y, \dots)
+  wga.test(x, y, \dots)
 }
 \arguments{
-    \item{x}{numeric vector of data values.}
-    \item{y}{numeric vector of data values.}
-    \item{\dots}{further arguments to be passed to or from methods.}
+  \item{x}{numeric vector of data values.}
+  \item{y}{numeric vector of data values.}
+  \item{\dots}{further arguments to be passed to or from methods.}
 }
 \value{
-WGA statistic.
+  WGA statistic.
 }
 \references{
-Ingrid Hedenfalk et at (2001),
-Gene-Expression Profiles in Hereditary Breast Cancer.
-\emph{New England Journal of Medicine}
-\bold{344}, 539--548.
-\url{http://content.nejm.org/cgi/content/abstract/344/8/539}
-\url{http://research.nhgri.nih.gov/microarray/discriminative.shtml}
+  Ingrid Hedenfalk et at (2001) "Gene-Expression Profiles in Hereditary Breast Cancer", \emph{New England Journal of Medicine}, \bold{344}, 539-548.
 }
 \keyword{htest}
