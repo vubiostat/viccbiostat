@@ -4,17 +4,13 @@
 \description{
   Normalizes data.
 }
-\synopsis{
-  normalize(x, margin = c(0,1,2), rename = TRUE)
-}
 \usage{
-  normalize(x, margin = 0, rename = TRUE)
   normalize(x, margin, rename = TRUE)
 }
 \arguments{
   \item{x}{vector, matrix, or data.frame of numeric data.}
-   \item{margin}{subscripts the normalization will be apply over.  '0' indicates all data, '1' indicates rows, and '2' indicates columns.}
-   \item{rename}{whether or not to add '.std' to the margin names in the return value.  Ignored if margin is '0'.}
+   \item{margin}{subscripts the normalization will be apply over.  \code{0} indicates all data, \code{1} indicates rows, and \code{2} indicates columns.}
+   \item{rename}{whether or not to add '.std' to the margin names in the return value.  Ignored if margin is \code{0}.}
 }
 \details{
   Uses the basic (x - mean(x))/sd(x) formula to normalize a set of data so its mean is 0 and standard deviation is 1.

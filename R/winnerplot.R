@@ -1,4 +1,4 @@
-winnerplot <- function(data, winner, legend=NULL, bin=NULL, xlim=NULL, pad=diff(bin), lty=par("lty"), lwd=par("lwd"), col=par("col"), ...)
+winnerplot <- function(data, winner, legend=NULL, bin=NULL, xlim=NULL, pad=diff(bin), lty=par("lty"), lwd=par("lwd"), col=par("col"), add=FALSE, ...)
 {
     if (missing(xlim))
     {
@@ -14,12 +14,12 @@ winnerplot <- function(data, winner, legend=NULL, bin=NULL, xlim=NULL, pad=diff(
     x <- x[xi]
     y <- data[xi, -1]
     ylim <- c(min(y), max(y))
-    matplot(x, y, type="l", lty=lty, lwd=lwd, col=col, xlab="Mass", ylab="Intensity", main=paste("Winner",winner), ...)
-    if (!missing(bin))
+    matplot(x, y, type="l", lty=lty, lwd=lwd, col=col, xlab="Mass", ylab="Intensity", main=paste("Winner",winner), add=add, ...)
+    if (!missing(bin) && !add)
         rect(bin[1], ylim[1], bin[2], ylim[2], col=NA, border="yellow")
-    if (missing(legend))
+    if (missing(legend) && !add)
         legend <- colnames(data)[-1]
-    if (!is.null(legend))
+    if (!is.null(legend) && !add)
         legend("topright", legend, lty=lty, lwd=lwd, col=col)
 }
 
@@ -27,6 +27,6 @@ winnerplots <- function(data, winners, legend=NULL, bins=NULL, lty=1, lwd=1, col
 {
     for (i in 1:length(winners))
     {
-        winnerplot(data=data, winner=winners[i], legend=legend, bin=bins[i,], lty=lty, lwd=lwd, col=col, ...)
+        winnerplot(data=data, winner=winners[i], legend=legend, bin=bins[i,], lty=lty, lwd=lwd, col=col, add=FALSE, ...)
     }
 }

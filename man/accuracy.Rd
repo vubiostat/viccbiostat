@@ -5,7 +5,7 @@
   Calculate the overall and marginal accuracies from the known and predicted classifications.
 }
 \usage{
-accuracy(known, predict)
+  accuracy(known, predict)
 }
 \arguments{
   \item{known}{array or factor of known classifications.}
@@ -15,7 +15,7 @@ accuracy(known, predict)
   Calculates the overall and marginal accuracies from the known and predicted classifications.  The margins are the union of the levels for the known and predicted classifications.
 }
 \value{
-  Array of overall and marginal accuracies.  Each accuracy is named for its margin's level or "overall".
+  Array of overall and marginal accuracies.  Each accuracy is named for its margin's level or overall.
 }
 \author{
   Will Gray\cr
