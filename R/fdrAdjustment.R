@@ -1,7 +1,7 @@
-fdrAdjustment <- function(data, ranks=NULL, method=c('step.up', 'step.down'))
+fdrAdjustment <- function(data, ranks=NULL, method=c("step.up", "step.down"))
 {
     method <- match.arg(method)
-    stepUp <- method == 'step.up'
+    stepUp <- method == "step.up"
     if (missing(ranks))
         ranks <- rank(data)
     q <- (data * length(data) / ranks)[order(data)]
