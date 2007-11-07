@@ -9,5 +9,5 @@ fdrAdjustment <- function(data, ranks=NULL, method=c('step.up', 'step.down'))
         q = as.double(q),
         as.integer(length(q)),
         as.integer(stepUp))$q[ranks]
-    result <- data.frame(rank=ranks, q)
+    data.frame(rank=ranks, q)
 }
