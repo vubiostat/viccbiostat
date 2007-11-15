@@ -1,0 +1,228 @@
+dotplot <- function(x, ...)  UseMethod("dotplot")
+
+dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, horizontal.lines=NULL, vertical.lines=NULL, lines.pars=list(col=colors()[344], lty=2), median.line=FALSE, mean.line=FALSE, median.pars=list(col=colors()[143]), mean.pars=median.pars, boxplot.pars=list(boxwex = 0.8, staplewex = 0.5, outwex = 0.5), show.n=FALSE, ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL)
+{
+    ## Version 2007-10-31
+    ## Now this works when the group size is 1.
+    ## can specify the color of mean/median line by ml.color
+    ## Version 2007-10-10
+    ## Better handling of the length of median lines and mean lines.
+    ## Version 2007-9-21
+    ## Much better handling of closer values.  Try different values for acc.
+    ## Version 2007-06-28
+    ## Allows vertical group names
+
+    # Colors and pch may be specified by group or by individual.
+    # Missing colors / pch are not allowed.
+
+    localAxis <- function(..., bg, cex, lty, lwd, pars) axis(...)
+    localBox <- function(..., bg, cex, lty, lwd, pars) box(...)
+    localWindow <- function(..., bg, cex, lty, lwd, pars) plot.window(...)
+    localTitle <- function(..., bg, cex, lty, lwd, pars) title(...)
+
+    args <- list(x, ...)
+    namedargs <- if (!is.null(attributes(args)$names))
+        attributes(args)$names != ""
+    else logical(length(args))
+    groups <- if (is.list(x))
+        x
+    else args[!namedargs]
+    if ((length(groups)) == 0)
+        stop("invalid first argument")
+    if (length(class(groups)))
+        groups <- unclass(groups)
+    if (!missing(names))
+        attr(groups, "names") <- names
+    else {
+        if (is.null(attr(groups, "names")))
+            attr(groups, "names") <- 1:n
+        names <- attr(groups, "names")
+    }
+
+    ng <- length(groups) # number of groups
+    l <- sapply(groups, length) # size of each group
+    g <- rep(1:ng, l) # groups as.numeric
+    nv <- sum(l) # total count
+
+    # set y scale
+    ylim <- if (!is.null(ylim))
+        ylim
+    else {
+        r <- range(groups, na.rm=TRUE)
+        pm <- diff(r) / 20
+        r + pm * c(-1,1)
+    }
+    # set x scale
+    xlim <- c(0.5, ng+0.5)
+
+    at <- if (is.null(at)) 1:ng else at
+    if (length(at) != ng)
+        stop("'at' must have same length as the number of groups")
+
+    xlab <- if (is.null(xlab)) "" else xlab
+    ylab <- if (is.null(ylab)) "" else ylab
+    main <- if (is.null(main)) "" else main
+    sub <- if (is.null(sub)) "" else sub
+
+    my.grey <- colors()[230]
+
+    type <- match.arg(type, choices=c("d","db","bd","b"), several.ok=TRUE)
+    # type of plot for each group
+    if ((length(type) > 1) && (length(type) != ng))
+        warning("length of 'type' does not match the number of groups")
+    type <- rep(type, length.out=ng)
+
+    # Use colors by group
+    if (group.col)
+    {
+        if (length(col) != ng)
+            warning("length of 'col' does not match the number of groups")
+        col <- rep(rep(col, length.out=ng), l)
+    }
+    # Use colors by individual or global
+    else
+    {
+        if((length(col) > 1) && (length(col) != nv))
+            warning("length of 'col' does not match the number of data points")
+        col <- rep(col, length.out=nv)
+    }
+
+    # Use plot characters by group
+    if (group.pch)
+    {
+        if (length(pch) != ng)
+            warning("length of 'pch' does not match the number of groups")
+        pch <- rep(rep(pch, length.out=ng), l)
+    }
+    # Use plot characters by individual or global
+    else
+    {
+        if((length(pch) > 1) && (length(pch) != nv))
+            warning("length of 'pch' does not match the number of data points")
+        pch <- rep(pch, length.out=nv)
+    }
+
+    # split colors and plot characters into groups
+    col <- split(col, g)
+    pch <- split(pch, g)
+
+    # color of boxplot for each group
+    g.col <- rep(col, length.out=ng)
+
+    # whether or not to display a mean and median line for each group
+    mean.line <- rep(mean.line, length.out=ng) 
+    median.line <- rep(median.line, length.out=ng)
+
+    # set defaults for acc and jit
+    if (is.null(acc) || is.na(acc)) acc <- 0.01
+    if (is.null(jit) || is.na(jit)) jit <- 0.05
+
+    # 1 2 3 1 3 2 1 1 4 2
+    # -------------------
+    # 1 1 1 2 2 2 3 4 1 3
+    how.many.so.far <- function(g)
+    {
+        out <- NULL
+        u <- unique(g)
+        for (i in 1:length(u)) out[which(g==u[i])] <- 1:sum(g==u[i])
+        out
+    }
+
+    # turns the values in each group into their plotting points
+    grouping <- function(v, dif)
+    {
+        vs <- sort(v)
+        together <- c(FALSE, diff(vs) <= dif)
+        g.id <- cumsum(!together)
+        g.si <- rep(x<-as.vector(table(g.id)), x)
+        vg <- cbind(vs, g.id, g.si)[rank(v),]
+        if (length(v)==1) vg <- as.data.frame(t(vg))
+        hmsf <- how.many.so.far(vg[,2])
+        data.frame(vg, hmsf)
+    }
+
+    for (i in 1:ng) groups[[i]] <- grouping(groups[[i]], acc)
+
+    # set up new plot
+    if (!add)
+    {
+        plot.new()
+        do.call("localWindow", c(list(xlim, ylim), args[namedargs]))
+    }
+
+    # add optional background lines
+    do.call("abline", c(list(h=horizontal.lines), lines.pars))
+    do.call("abline", c(list(v=vertical.lines), lines.pars))
+
+    # function to compute the jittering
+    jit.f2 <- function(g.si, hm.sf)  hm.sf - (g.si + 1) / 2
+
+    out <- list()
+
+    Lme <- 0.2 * c(-1, 1)
+    for (i in 1:ng)
+    {
+        to.plot <- groups[[i]]
+        gs <- to.plot$g.si 
+        hms <- to.plot$hm
+        x <- rep(at[i], nrow(to.plot)) + jit.f2(gs, hms) * jit
+        y <- to.plot$vs
+
+        if (type[i] == "bd") # dots behind
+            do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=my.grey), args[namedargs]))
+        if (type[i] %in% c("bd", "b")) # boxplot in front
+            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], pch=pch[[i]][1]), boxplot.pars))
+        if (type[i] == "db") # boxplot behind
+            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.grey, pch=pch[[i]][1]), boxplot.pars))
+        if (mean.line[i] && (type[i] == "d")) # mean line
+            do.call("lines", c(list(at[i]+Lme, rep(mean(y), 2)), mean.pars))
+        if (median.line[i] && (type[i] == "d")) # median line
+            do.call("lines", c(list(at[i]+Lme, rep(median(y), 2)), median.pars))
+        if (type[i] %in% c("db", "d")) # dots in front
+            do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), args[namedargs]))
+
+        out[[i]] <- data.frame(to.plot, col=col[[i]], pch=pch[[i]])
+    }
+
+    # add axes
+    if (axes)
+    {
+        do.call("localAxis", c(list(side=1, at=1:ng, labels=names, tcl=0), args[namedargs]))
+        do.call("localAxis", c(list(side=2), args[namedargs]))
+    }
+    # optional sample sizes
+    if (show.n)
+        do.call("localAxis", c(list(side=3, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), args[namedargs], list(mgp=c(3,.5,1), las=1)))
+    # add bounding box
+    if (frame.plot) do.call("localBox", args[namedargs])
+    # add titles
+    if (ann) do.call("localTitle", c(list(main=main, sub=sub, xlab=xlab, ylab=ylab), args[namedargs]))
+
+    invisible(out)
+}
+
+dotplot.formula <- function(formula, data=NULL, ..., subset, na.action = NULL)
+{
+    if (missing(formula) || (length(formula) != 3))
+        stop("'formula' missing or incorrect")
+    m <- match.call(expand.dots = FALSE)
+    if (is.matrix(eval(m$data, parent.frame())))
+        m$data <- as.data.frame(data)
+    m$... <- NULL
+    m$na.action <- na.action
+    m[[1]] <- as.name("model.frame")
+    mf <- eval(m, parent.frame())
+    response <- attr(attr(mf, "terms"), "response")
+    ## special handling for col and pch
+    args <- list(...)
+    n <- nrow(mf)
+    col <- if ("col" %in% names(args)) args$col else par("col")
+    pch <- if ("pch" %in% names(args)) args$pch else par("pch")
+    group.col <- if ("group.col" %in% names(args)) args$group.col else FALSE
+    group.pch <- if ("group.pch" %in% names(args)) args$group.pch else FALSE
+    if (!group.col) args$col <- unlist(split(rep(col, length.out=n), mf[-response]))
+    if (!group.pch) args$pch <- unlist(split(rep(pch, length.out=n), mf[-response]))
+    ##
+    do.call("dotplot", c(list(split(mf[[response]], mf[-response])), args))
+    invisible(mf)
+}
