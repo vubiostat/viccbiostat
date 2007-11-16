@@ -35,10 +35,10 @@
   \item{pch}{character or integer code for kind of points, see \code{\link{points.default}}.}
   \item{group.col}{a logical value indicating whether values in \code{col} correspond to individual values or groups of values.}
   \item{group.pch}{a logical value indicating whether values in \code{pch} correspond to individual values or groups of values.}
-  \item{horizontal.lines,vertical.lines}{numeric vector for the locations of lines to be plotted in the background.}
+  \item{horizontal.lines, vertical.lines}{numeric vector for the locations of lines to be plotted in the background.}
   \item{lines.pars}{additional graphical parameters to pass to \code{\link{lines}}.}
-  \item{median.line,mean.line}{a logical value indicating whether the medians and or means should be plotted.  Only for \code{type = "d"}.}
-  \item{median.pars,mean.pars}{additional graphical parameters to pass to \code{\link{lines}}.}
+  \item{median.line, mean.line}{a logical value indicating whether the medians and or means should be plotted.  Only for \code{type = "d"}.}
+  \item{median.pars, mean.pars}{additional graphical parameters to pass to \code{\link{lines}}.}
   \item{boxplot.pars}{additional graphical parameters to pass to \code{\link{boxplot}}.}
   \item{show.n}{a logical value indicating whether there the sample sizes should be printed along axis 3.}
   \item{ann}{a logical value indicating whether the default annotation (title and x and y axis labels) should appear on the plot.}
@@ -48,9 +48,19 @@
   \item{at}{numeric vector giving the locations where the dotplots should be drawn, particularly when \code{add = TRUE}; defaults to \code{1:n} where \code{n} is the number of groups.}
 }
 \details{
-The arguments \code{type}, \code{col}, \code{pch} may be vectors and will be recycled.
+  The arguments \code{type}, \code{col}, \code{pch} may be vectors and will be recycled.
 }
-\author{Tatsuki Koyama \email{tatsuki.koyama@vanderbilt.edu} and Will Gray \email{w.gray@vanderbilt.edu}}
+\author{
+  Tatsuki Koyama\cr
+  Department of Biostatistics\cr
+  Vanderbilt University\cr
+  \email{tatsuki.koyama@vanderbilt.edu}\cr
+  \cr
+  Will Gray\cr
+  Department of Biostatistics\cr
+  Vanderbilt University\cr
+  \email{w.gray@vanderbilt.edu}
+}
 \seealso{
   \code{\link{boxplot}}.
 }
