@@ -18,10 +18,9 @@ dotplot(x, \dots)
         group.col = FALSE, group.pch = FALSE, horizontal.lines = NULL,
         vertical.lines = NULL, lines.pars = list(col = colors()[344], lty = 2),
         median.line = FALSE, mean.line = FALSE,
-        median.pars = list(col = colors()[143]), mean.pars = median.pars,
-        boxplot.pars = list(boxwex = 0.8, staplewex = 0.5, outwex = 0.5),
-        show.n = FALSE, ann = par("ann"), axes = TRUE, frame.plot = axes,
-        add = FALSE, at = NULL)
+        median.pars = list(col = par("col")), mean.pars = median.pars,
+        boxplot.pars = NULL, show.n = FALSE, ann = par("ann"), axes = TRUE,
+        frame.plot = axes, add = FALSE, at = NULL)
 }
 \arguments{
   \item{formula}{a formula, such as \code{y ~ grp}, where \code{y} is a numeric vector of data values to be split into groups according to the grouping variable \code{grp} (usually a factor).}
@@ -79,12 +78,13 @@ dotplot(x, \dots)
   \code{\link{boxplot}}.
 }
 \examples{
-  \dontshow{
-    set.seed(5)
-    v <- rnorm(50, seq(66, 70, length=50), .2)
-    g <- paste('Group', sample(LETTERS[1:5], 50, prob=c(.1,.2,.3,.3,.1), TRUE))
-    sex <- sample(1:2, 50, TRUE)
-  }
-  dotplot(v ~ g, acc=0.1, jit=0.1, ylab='Values', col=sex, pch=c(1,19,3,8,15), group.pch=TRUE, cex=0.75)
+\dontshow{
+set.seed(5)
+v <- rnorm(50, seq(66, 70, length=50), .2)
+g <- paste('Group', sample(LETTERS[1:5], 50, prob=c(.1,.2,.3,.3,.1), TRUE))
+sex <- sample(1:2, 50, TRUE)
+}
+dotplot(v ~ g, acc=0.1, jit=0.1, ylab='Values', col=sex,
+        pch=c(1,19,3,8,15), group.pch=TRUE, cex=0.75)
 }
 \keyword{hplot}

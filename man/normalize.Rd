@@ -25,10 +25,10 @@ normalize(x, margin, rename = TRUE)
   \email{w.gray@vanderbilt.edu}
 }
 \examples{
-  \dontshow{
-    d <- data.frame(matrix(rnorm(50), ncol=5))
-    names(d) <- c("tvalue", "cvalue", "dvalue", "asam", "wga")
-  }
-  normalize(d, 2)
+\dontshow{
+d <- data.frame(matrix(rnorm(50), ncol=5))
+names(d) <- c("tvalue", "cvalue", "dvalue", "asam", "wga")
+}
+normalize(d, 2)
 }
 \keyword{utilities}

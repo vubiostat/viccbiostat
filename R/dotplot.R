@@ -1,6 +1,6 @@
 dotplot <- function(x, ...)  UseMethod("dotplot")
 
-dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, horizontal.lines=NULL, vertical.lines=NULL, lines.pars=list(col=colors()[344], lty=2), median.line=FALSE, mean.line=FALSE, median.pars=list(col=colors()[143]), mean.pars=median.pars, boxplot.pars=list(boxwex = 0.8, staplewex = 0.5, outwex = 0.5), show.n=FALSE, ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL)
+dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, horizontal.lines=NULL, vertical.lines=NULL, lines.pars=list(col=colors()[344], lty=2), median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL)
 {
     ## Version 2007-10-31
     ## Now this works when the group size is 1.
@@ -15,10 +15,10 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
     # Colors and pch may be specified by group or by individual.
     # Missing colors / pch are not allowed.
 
-    localAxis <- function(..., bg, cex, lty, lwd, pars) axis(...)
-    localBox <- function(..., bg, cex, lty, lwd, pars) box(...)
-    localWindow <- function(..., bg, cex, lty, lwd, pars) plot.window(...)
-    localTitle <- function(..., bg, cex, lty, lwd, pars) title(...)
+    localAxis <- function(..., bg, cex, lty, lwd) axis(...)
+    localBox <- function(..., bg, cex, lty, lwd) box(...)
+    localWindow <- function(..., bg, cex, lty, lwd) plot.window(...)
+    localTitle <- function(..., bg, cex, lty, lwd) title(...)
 
     args <- list(x, ...)
     namedargs <- if (!is.null(attributes(args)$names))
@@ -77,7 +77,8 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
     {
         if (length(col) != ng)
             warning("length of 'col' does not match the number of groups")
-        col <- rep(rep(col, length.out=ng), l)
+        g.col <- rep(col, length.out=ng)
+        col <- rep(g.col, l)
     }
     # Use colors by individual or global
     else
@@ -85,6 +86,7 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
         if((length(col) > 1) && (length(col) != nv))
             warning("length of 'col' does not match the number of data points")
         col <- rep(col, length.out=nv)
+        g.col <- rep(1, length.out=ng)
     }
 
     # Use plot characters by group
@@ -105,9 +107,6 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
     # split colors and plot characters into groups
     col <- split(col, g)
     pch <- split(pch, g)
-
-    # color of boxplot for each group
-    g.col <- rep(col, length.out=ng)
 
     # whether or not to display a mean and median line for each group
     mean.line <- rep(mean.line, length.out=ng) 
@@ -171,9 +170,11 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
         if (type[i] == "bd") # dots behind
             do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=my.grey), args[namedargs]))
         if (type[i] %in% c("bd", "b")) # boxplot in front
-            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], pch=pch[[i]][1]), boxplot.pars))
+        {
+            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE), boxplot.pars))
+        }
         if (type[i] == "db") # boxplot behind
-            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.grey, pch=pch[[i]][1]), boxplot.pars))
+            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.grey, outline=FALSE), boxplot.pars))
         if (mean.line[i] && (type[i] == "d")) # mean line
             do.call("lines", c(list(at[i]+Lme, rep(mean(y), 2)), mean.pars))
         if (median.line[i] && (type[i] == "d")) # median line

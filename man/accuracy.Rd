@@ -24,10 +24,10 @@ accuracy(known, predict)
   \email{w.gray@vanderbilt.edu}
 }
 \examples{
-  \dontshow{
-    known <- c(rep(1:2,each=4))
-    predict <- c(1, 2, 1, 1, 2, 1, 2, 1)
-  }
-  accuracy(known, predict)
+\dontshow{
+known <- c(rep(1:2,each=4))
+predict <- c(1, 2, 1, 1, 2, 1, 2, 1)
+}
+accuracy(known, predict)
 }
 \keyword{utilities}
