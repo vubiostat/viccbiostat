@@ -5,7 +5,9 @@
   Plot the average spectra for a specific range.
 }
 \usage{
-  winnerplot(data, winner, legend = NULL, bin = NULL, xlim = NULL, pad = diff(bin), lty = par("lty"), lwd = par("lwd"), col = par("col"), add = FALSE, \dots)
+winnerplot(data, winner, legend = NULL, bin = NULL, xlim = NULL,
+           pad = diff(bin), lty = par("lty"), lwd = par("lwd"),
+           col = par("col"), add = FALSE, \dots)
 }
 \arguments{
   \item{data}{numeric matrix of average spectra data.  The first column should be the x coordinates (mass) and each subsequent column should be y coordinates.}

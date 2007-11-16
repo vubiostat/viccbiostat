@@ -1,11 +1,12 @@
 \name{info.test}
 \alias{info.test}
+\alias{infotest}
 \title{InfoScore}
 \description{
   InfoScore method for high-dimensional data analysis.
 }
 \usage{
-  info.test(x, y, \dots)
+info.test(x, y, \dots)
 }
 \arguments{
   \item{x}{numeric vector of data values.}

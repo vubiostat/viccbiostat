@@ -5,7 +5,7 @@
   Class comparison for high-dimensional data.
 }
 \usage{
-  huwright.test(x, y, tol=1, \dots)
+huwright.test(x, y, tol=1, \dots)
 }
 \arguments{
   \item{x}{numeric matrix or data.frame of data values with all variables.}

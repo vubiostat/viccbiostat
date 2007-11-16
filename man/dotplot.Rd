@@ -7,11 +7,21 @@
   Produce dot plot(s) of the given (grouped) values.
 }
 \usage{
-  dotplot(x, \dots)
+dotplot(x, \dots)
 
-  \method{dotplot}{formula}(formula, data = NULL, \dots, subset, na.action = NULL)
+\method{dotplot}{formula}(formula, data = NULL, \dots,
+        subset, na.action = NULL)
 
-  \method{dotplot}{default}(x, \dots, type = "d", acc = 0.01, jit = 0.05, names, ylim = NULL, main = NULL, sub = NULL, xlab = NULL, ylab = NULL, col = par("col"), pch = par("pch"), group.col = FALSE, group.pch = FALSE, horizontal.lines = NULL, vertical.lines = NULL, lines.pars = list(col = colors()[344], lty = 2), median.line = FALSE, mean.line = FALSE, median.pars = list(col = colors()[143]), mean.pars = median.pars, boxplot.pars = list(boxwex = 0.8, staplewex = 0.5, outwex = 0.5), show.n = FALSE, ann = par("ann"), axes = TRUE, frame.plot = axes, add = FALSE, at = NULL)
+\method{dotplot}{default}(x, \dots, type = "d", acc = 0.01, jit = 0.05,
+        names, ylim = NULL, main = NULL, sub = NULL,
+        xlab = NULL, ylab = NULL, col = par("col"), pch = par("pch"),
+        group.col = FALSE, group.pch = FALSE, horizontal.lines = NULL,
+        vertical.lines = NULL, lines.pars = list(col = colors()[344], lty = 2),
+        median.line = FALSE, mean.line = FALSE,
+        median.pars = list(col = colors()[143]), mean.pars = median.pars,
+        boxplot.pars = list(boxwex = 0.8, staplewex = 0.5, outwex = 0.5),
+        show.n = FALSE, ann = par("ann"), axes = TRUE, frame.plot = axes,
+        add = FALSE, at = NULL)
 }
 \arguments{
   \item{formula}{a formula, such as \code{y ~ grp}, where \code{y} is a numeric vector of data values to be split into groups according to the grouping variable \code{grp} (usually a factor).}
@@ -22,9 +32,13 @@
   \item{\dots}{For the \code{formula} method, named arguments to be passed to the default method.
 
   For the default method, unnamed arguments are additional data vectors (unless \code{x} is a list when they are ignored), and named arguments are extra graphical parameters (see \code{\link{par}}).}
-  \item{type}{}
-  \item{acc}{}
-  \item{jit}{}
+  \item{type}{character vector giving the type of plot desired for each group.  The following values are possible:
+    \code{"d"} for dots,
+    \code{"b"} for boxplots,
+    \code{"db"} for dots over boxplots,
+    \code{"bd"} for boxplots over dots.}
+  \item{acc}{numeric value for a distance threshold for points to be jittered.}
+  \item{jit}{numeric value of how much to jitter.}
   \item{names}{group labels which will be printed under each boxplot.}
   \item{ylim}{the y limits of the plot.}
   \item{main}{a main title for the plot, see also \code{\link{title}}.}

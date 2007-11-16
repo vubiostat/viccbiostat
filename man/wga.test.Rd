@@ -5,7 +5,7 @@
   Uses the NIH's Weighted Method to determine differentially expressed biomarkers.
 }
 \usage{
-  wga.test(x, y, \dots)
+wga.test(x, y, \dots)
 }
 \arguments{
   \item{x}{numeric vector of data values.}

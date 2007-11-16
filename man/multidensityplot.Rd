@@ -5,7 +5,8 @@
   Plot multiple densities on the same device.
 }
 \usage{
-  multidensityplot(data, legend = NULL, type = "l", lty = par("lty"), lwd = 1, pch = NULL, col = 1:6, \dots)
+multidensityplot(data, legend = NULL, type = "l", lty = par("lty"),
+                 lwd = 1, pch = NULL, col = 1:6, \dots)
 }
 \arguments{
   \item{data}{list of \code{\link{density}} objects or anything that has an S3 density function.  If not \code{density} objects, the density is computed using the default arguments.}

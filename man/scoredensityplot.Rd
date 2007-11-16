@@ -5,7 +5,11 @@
   Plot the boxplot and density of the scores for two groups and any additional samples.
 }
 \usage{
-  scoredensityplot(x, y, z = NULL, main = NULL, legend = NULL, boxplots = TRUE, split.screen=TRUE, type = "l", lty = c(1,2,1), lwd = c(1,1,3), pch = NULL, col = c("red", "blue", "green"), xlim = NULL, ylim = NULL, \dots)
+scoredensityplot(x, y, z = NULL, main = NULL, legend = NULL,
+                 boxplots = TRUE, split.screen=TRUE, type = "l",
+                 lty = c(1,2,1), lwd = c(1,1,3), pch = NULL,
+                 col = c("red", "blue", "green"),
+                 xlim = NULL, ylim = NULL, \dots)
 }
 \arguments{
   \item{x,y}{numeric vectors of score data for density and box plotting.}

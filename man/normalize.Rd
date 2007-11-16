@@ -5,7 +5,7 @@
   Normalizes data.
 }
 \usage{
-  normalize(x, margin, rename = TRUE)
+normalize(x, margin, rename = TRUE)
 }
 \arguments{
   \item{x}{vector, matrix, or data.frame of numeric data.}
