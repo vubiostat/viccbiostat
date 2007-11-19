@@ -171,7 +171,12 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
             do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=my.grey), args[namedargs]))
         if (type[i] %in% c("bd", "b")) # boxplot in front
         {
-            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE), boxplot.pars))
+            outliers <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE), boxplot.pars))$out
+            if (type[i] == "b")
+            {
+                toplot <- rowSums(outer(y, outliers, "==")) == 1
+                do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), args[namedargs]))
+            }
         }
         if (type[i] == "db") # boxplot behind
             do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.grey, outline=FALSE), boxplot.pars))
