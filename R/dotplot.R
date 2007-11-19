@@ -2,19 +2,6 @@ dotplot <- function(x, ...)  UseMethod("dotplot")
 
 dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, horizontal.lines=NULL, vertical.lines=NULL, lines.pars=list(col=colors()[344], lty=2), median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL)
 {
-    ## Version 2007-10-31
-    ## Now this works when the group size is 1.
-    ## can specify the color of mean/median line by ml.color
-    ## Version 2007-10-10
-    ## Better handling of the length of median lines and mean lines.
-    ## Version 2007-9-21
-    ## Much better handling of closer values.  Try different values for acc.
-    ## Version 2007-06-28
-    ## Allows vertical group names
-
-    # Colors and pch may be specified by group or by individual.
-    # Missing colors / pch are not allowed.
-
     localAxis <- function(..., bg, cex, lty, lwd) axis(...)
     localBox <- function(..., bg, cex, lty, lwd) box(...)
     localWindow <- function(..., bg, cex, lty, lwd) plot.window(...)
@@ -27,7 +14,7 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
     groups <- if (is.list(x))
         x
     else args[!namedargs]
-    if ((length(groups)) == 0)
+    if ((n <- length(groups)) == 0)
         stop("invalid first argument")
     if (length(class(groups)))
         groups <- unclass(groups)
