@@ -1,6 +1,6 @@
 dotplot <- function(x, ...)  UseMethod("dotplot")
 
-dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, horizontal.lines=NULL, vertical.lines=NULL, lines.pars=list(col=colors()[344], lty=2), median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL)
+dotplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL)
 {
     localAxis <- function(..., bg, cex, lty, lwd) axis(...)
     localBox <- function(..., bg, cex, lty, lwd) box(...)
@@ -51,8 +51,6 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
     main <- if (is.null(main)) "" else main
     sub <- if (is.null(sub)) "" else sub
 
-    my.grey <- colors()[230]
-
     type <- match.arg(type, choices=c("d","db","bd","b"), several.ok=TRUE)
     # type of plot for each group
     if ((length(type) > 1) && (length(type) != ng))
@@ -99,8 +97,8 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
     mean.line <- rep(mean.line, length.out=ng) 
     median.line <- rep(median.line, length.out=ng)
 
-    # set defaults for acc and jit
-    if (is.null(acc) || is.na(acc)) acc <- 0.01
+    # set defaults for dist and jit
+    if (is.null(dist) || is.na(dist)) dist <- diff(range(v)) / 100
     if (is.null(jit) || is.na(jit)) jit <- 0.05
 
     # 1 2 3 1 3 2 1 1 4 2
@@ -127,7 +125,7 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
         data.frame(vg, hmsf)
     }
 
-    for (i in 1:ng) groups[[i]] <- grouping(groups[[i]], acc)
+    for (i in 1:ng) groups[[i]] <- grouping(groups[[i]], dist)
 
     # set up new plot
     if (!add)
@@ -135,10 +133,6 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
         plot.new()
         do.call("localWindow", c(list(xlim, ylim), args[namedargs]))
     }
-
-    # add optional background lines
-    do.call("abline", c(list(h=horizontal.lines), lines.pars))
-    do.call("abline", c(list(v=vertical.lines), lines.pars))
 
     # function to compute the jittering
     jit.f2 <- function(g.si, hm.sf)  hm.sf - (g.si + 1) / 2
@@ -167,12 +161,12 @@ dotplot.default <- function(x, ..., type="d", acc=0.01, jit=0.05, names, ylim=NU
         }
         if (type[i] == "db") # boxplot behind
             do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.grey, outline=FALSE), boxplot.pars))
-        if (mean.line[i] && (type[i] == "d")) # mean line
-            do.call("lines", c(list(at[i]+Lme, rep(mean(y), 2)), mean.pars))
-        if (median.line[i] && (type[i] == "d")) # median line
-            do.call("lines", c(list(at[i]+Lme, rep(median(y), 2)), median.pars))
         if (type[i] %in% c("db", "d")) # dots in front
             do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), args[namedargs]))
+        if (mean.line[i]) # mean line
+            do.call("lines", c(list(at[i]+Lme, rep(mean(y), 2)), mean.pars))
+        if (median.line[i]) # median line
+            do.call("lines", c(list(at[i]+Lme, rep(median(y), 2)), median.pars))
 
         out[[i]] <- data.frame(to.plot, col=col[[i]], pch=pch[[i]])
     }
