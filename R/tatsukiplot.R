@@ -1,6 +1,6 @@
-dotplot <- function(x, ...)  UseMethod("dotplot")
+tatsukiplot <- function(x, ...)  UseMethod("tatsukiplot")
 
-dotplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL)
+tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL)
 {
     localAxis <- function(..., bg, cex, lty, lwd) axis(...)
     localBox <- function(..., bg, cex, lty, lwd) box(...)
@@ -188,7 +188,7 @@ dotplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, ylim=N
     invisible(out)
 }
 
-dotplot.formula <- function(formula, data=NULL, ..., subset, na.action = NULL)
+tatsukiplot.formula <- function(formula, data=NULL, ..., subset, na.action = NULL)
 {
     if (missing(formula) || (length(formula) != 3))
         stop("'formula' missing or incorrect")
@@ -210,6 +210,6 @@ dotplot.formula <- function(formula, data=NULL, ..., subset, na.action = NULL)
     if (!group.col) args$col <- unlist(split(rep(col, length.out=n), mf[-response]))
     if (!group.pch) args$pch <- unlist(split(rep(pch, length.out=n), mf[-response]))
     ##
-    do.call("dotplot", c(list(split(mf[[response]], mf[-response])), args))
+    do.call("tatsukiplot", c(list(split(mf[[response]], mf[-response])), args))
     invisible(mf)
 }

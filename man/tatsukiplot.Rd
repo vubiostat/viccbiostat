@@ -1,24 +1,24 @@
-\name{dotplot}
-\alias{dotplot}
-\alias{dotplot.formula}
-\alias{dotplot.default}
+\name{tatsukiplot}
+\alias{tatsukiplot}
+\alias{tatsukiplot.formula}
+\alias{tatsukiplot.default}
 \title{Dot Plots}
 \description{
   Produce dot plot(s) of the given (grouped) values.
 }
 \usage{
-dotplot(x, \dots)
+tatsukiplot(x, \dots)
 
-\method{dotplot}{formula}(formula, data = NULL, \dots,
+\method{tatsukiplot}{formula}(formula, data = NULL, \dots,
         subset, na.action = NULL)
 
-\method{dotplot}{default}(x, \dots, type = "d", dist = NULL, jit = 0.05,
+\method{tatsukiplot}{default}(x, \dots, type = "d", dist = NULL, jit = 0.05,
         names, ylim = NULL, main = NULL, sub = NULL,
         xlab = NULL, ylab = NULL, col = par("col"), pch = par("pch"),
         group.col = FALSE, group.pch = FALSE, median.line = FALSE,
         mean.line = FALSE, median.pars = list(col = par("col")),
         mean.pars = median.pars, boxplot.pars = NULL, show.n = FALSE,
-        ann = par("ann"), axes = TRUE, my.gray = gray(0.75),
+        my.gray = gray(0.75), ann = par("ann"), axes = TRUE,
         frame.plot = axes, add = FALSE, at = NULL)
 }
 \arguments{
@@ -55,8 +55,8 @@ dotplot(x, \dots)
   \item{ann}{a logical value indicating whether the default annotation (title and x and y axis labels) should appear on the plot.}
   \item{axes}{a logical value indicating whether both axes should be drawn on the plot.  Use graphical parameter \code{"xaxt"} or \code{"yaxt"} to suppress just one of the axes.}
   \item{frame.plot}{a logical value indicating whether a box should be drawn around the plot.}
-  \item{add}{logical, if true \emph{add} dotplot to current plot.}
-  \item{at}{numeric vector giving the locations where the dotplots should be drawn, particularly when \code{add = TRUE}; defaults to \code{1:n} where \code{n} is the number of groups.}
+  \item{add}{logical, if true \emph{add} tatsukiplot to current plot.}
+  \item{at}{numeric vector giving the locations where the tatsukiplots should be drawn, particularly when \code{add = TRUE}; defaults to \code{1:n} where \code{n} is the number of groups.}
 }
 \details{
   The arguments \code{type}, \code{col}, \code{pch} may be vectors and will be recycled.
@@ -73,7 +73,7 @@ dotplot(x, \dots)
   \email{w.gray@vanderbilt.edu}
 }
 \seealso{
-  \code{\link{boxplot}}.
+  \code{\link{boxplot}}, \code{\link{dotplot}}.
 }
 \examples{
 \dontshow{
@@ -82,7 +82,7 @@ v <- rnorm(50, seq(66, 70, length=50), .2)
 g <- paste('Group', sample(LETTERS[1:5], 50, prob=c(.1,.2,.3,.3,.1), TRUE))
 sex <- sample(1:2, 50, TRUE)
 }
-dotplot(v ~ g, dist=0.1, jit=0.1, ylab='Values', col=sex,
+tatsukiplot(v ~ g, dist=0.1, jit=0.1, ylab='Values', col=sex,
         pch=c(1,19,3,8,15), group.pch=TRUE, cex=0.75)
 }
 \keyword{hplot}
