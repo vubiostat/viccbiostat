@@ -3,7 +3,7 @@ multidensityplot <- function(data, legend=NULL, type="l", lty=par("lty"), lwd=1,
     if (class(data[[1]]) == "density")
         dens <- data
     else
-        dens <- lapply(data, density)
+        dens <- lapply(data, density, na.rm=TRUE)
     x <- sapply(dens, function(d) d$x)
     y <- sapply(dens, function(d) d$y)
     matplot(x, y, type=type, lty=lty, lwd=lwd, pch=pch, col=col, ...)
