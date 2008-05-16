@@ -19,7 +19,7 @@ tatsukiplot(x, \dots)
         mean.line = FALSE, median.pars = list(col = par("col")),
         mean.pars = median.pars, boxplot.pars = NULL, show.n = FALSE,
         my.gray = gray(0.75), ann = par("ann"), axes = TRUE,
-        frame.plot = axes, add = FALSE, at = NULL)
+        frame.plot = axes, add = FALSE, at = NULL, horizontal = FALSE)
 }
 \arguments{
   \item{formula}{a formula, such as \code{y ~ grp}, where \code{y} is a numeric vector of data values to be split into groups according to the grouping variable \code{grp} (usually a factor).}
@@ -57,6 +57,7 @@ tatsukiplot(x, \dots)
   \item{frame.plot}{a logical value indicating whether a box should be drawn around the plot.}
   \item{add}{logical, if true \emph{add} tatsukiplot to current plot.}
   \item{at}{numeric vector giving the locations where the tatsukiplots should be drawn, particularly when \code{add = TRUE}; defaults to \code{1:n} where \code{n} is the number of groups.}
+  \item{horizontal}{logical indicating if the plots should be horizontal; default FALSE means vertical.}
 }
 \details{
   The arguments \code{type}, \code{col}, \code{pch} may be vectors and will be recycled.

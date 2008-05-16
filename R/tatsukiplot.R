@@ -1,6 +1,6 @@
 tatsukiplot <- function(x, ...)  UseMethod("tatsukiplot")
 
-tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL)
+tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE)
 {
     localAxis <- function(..., bg, cex, lty, lwd) axis(...)
     localBox <- function(..., bg, cex, lty, lwd) box(...)
@@ -131,7 +131,11 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     if (!add)
     {
         plot.new()
-        do.call("localWindow", c(list(xlim, ylim), args[namedargs]))
+        if (horizontal) {
+            do.call("localWindow", c(list(ylim, xlim), args[namedargs]))
+        } else {
+            do.call("localWindow", c(list(xlim, ylim), args[namedargs]))
+        }
     }
 
     # function to compute the jittering
@@ -148,25 +152,49 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
         x <- rep(at[i], nrow(to.plot)) + jit.f2(gs, hms) * jit
         y <- to.plot$vs
 
-        if (type[i] == "bd") # dots behind
-            do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=my.grey), args[namedargs]))
+        if (type[i] == "bd") { # dots behind
+            if (horizontal) {
+            do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=my.gray), args[namedargs]))
+            } else {
+                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=my.gray), args[namedargs]))
+            }
+        }
         if (type[i] %in% c("bd", "b")) # boxplot in front
         {
-            outliers <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE), boxplot.pars))$out
+            outliers <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE, horizontal=horizontal), boxplot.pars))$out
             if (type[i] == "b")
             {
                 toplot <- rowSums(outer(y, outliers, "==")) == 1
-                do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), args[namedargs]))
+                if (horizontal) {
+                    do.call("points", c(list(x=y[toplot], y=x[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), args[namedargs]))
+                } else {
+                    do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), args[namedargs]))
+                }
             }
         }
         if (type[i] == "db") # boxplot behind
-            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.grey, outline=FALSE), boxplot.pars))
-        if (type[i] %in% c("db", "d")) # dots in front
-            do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), args[namedargs]))
-        if (mean.line[i]) # mean line
-            do.call("lines", c(list(at[i]+Lme, rep(mean(y), 2)), mean.pars))
-        if (median.line[i]) # median line
-            do.call("lines", c(list(at[i]+Lme, rep(median(y), 2)), median.pars))
+            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.gray, outline=FALSE, horizontal=horizontal), boxplot.pars))
+        if (type[i] %in% c("db", "d")) { # dots in front
+            if (horizontal) {
+                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), args[namedargs]))
+            } else {
+                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), args[namedargs]))
+            }
+        }
+        if (mean.line[i]) { # mean line
+            if (horizontal) {
+                do.call("lines", c(list(rep(mean(y), at[i]+Lme, 2)), mean.pars))
+            } else {
+                do.call("lines", c(list(at[i]+Lme, rep(mean(y), 2)), mean.pars))
+            }
+        }
+        if (median.line[i]) { # median line
+            if (horizontal) {
+                do.call("lines", c(list(rep(median(y), at[i]+Lme, 2)), median.pars))
+            } else {
+                do.call("lines", c(list(at[i]+Lme, rep(median(y), 2)), median.pars))
+            }
+        }
 
         out[[i]] <- data.frame(to.plot, col=col[[i]], pch=pch[[i]])
     }
@@ -174,16 +202,24 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     # add axes
     if (axes)
     {
-        do.call("localAxis", c(list(side=1, at=1:ng, labels=names, tcl=0), args[namedargs]))
-        do.call("localAxis", c(list(side=2), args[namedargs]))
+        do.call("localAxis", c(list(side=1+horizontal, at=1:ng, labels=names, tcl=0), args[namedargs]))
+        do.call("localAxis", c(list(side=2-horizontal), args[namedargs]))
     }
     # optional sample sizes
     if (show.n)
-        do.call("localAxis", c(list(side=3, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), args[namedargs], list(mgp=c(3,.5,1), las=1)))
+        do.call("localAxis", c(list(side=3+horizontal, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), args[namedargs], list(mgp=c(3,.5,1), las=0)))
     # add bounding box
-    if (frame.plot) do.call("localBox", args[namedargs])
+    if (frame.plot)
+        do.call("localBox", args[namedargs])
     # add titles
-    if (ann) do.call("localTitle", c(list(main=main, sub=sub, xlab=xlab, ylab=ylab), args[namedargs]))
+    if (ann)
+    {
+        if (horizontal) {
+            do.call("localTitle", c(list(main=main, sub=sub, xlab=ylab, ylab=xlab), args[namedargs]))
+        } else {
+            do.call("localTitle", c(list(main=main, sub=sub, xlab=xlab, ylab=ylab), args[namedargs]))
+        }
+    }
 
     invisible(out)
 }
