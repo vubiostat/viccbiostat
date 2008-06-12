@@ -1,3 +1,6 @@
 chm/
 src/*.o
 src/*.so
+src/*.d
+src/*.rc
+src/Makedeps
