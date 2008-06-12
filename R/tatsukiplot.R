@@ -1,7 +1,6 @@
 tatsukiplot <- function(x, ...)  UseMethod("tatsukiplot")
 
-tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE)
-{
+tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE) {
     localAxis <- function(..., bg, cex, lty, lwd) axis(...)
     localBox <- function(..., bg, cex, lty, lwd) box(...)
     localWindow <- function(..., bg, cex, lty, lwd) plot.window(...)
@@ -58,16 +57,13 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     type <- rep(type, length.out=ng)
 
     # Use colors by group
-    if (group.col)
-    {
+    if (group.col) {
         if (length(col) != ng)
             warning("length of 'col' does not match the number of groups")
         g.col <- rep(col, length.out=ng)
         col <- rep(g.col, l)
-    }
     # Use colors by individual or global
-    else
-    {
+    } else {
         if((length(col) > 1) && (length(col) != nv))
             warning("length of 'col' does not match the number of data points")
         col <- rep(col, length.out=nv)
@@ -75,15 +71,12 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     }
 
     # Use plot characters by group
-    if (group.pch)
-    {
+    if (group.pch) {
         if (length(pch) != ng)
             warning("length of 'pch' does not match the number of groups")
         pch <- rep(rep(pch, length.out=ng), l)
-    }
     # Use plot characters by individual or global
-    else
-    {
+    } else {
         if((length(pch) > 1) && (length(pch) != nv))
             warning("length of 'pch' does not match the number of data points")
         pch <- rep(pch, length.out=nv)
@@ -104,8 +97,7 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     # 1 2 3 1 3 2 1 1 4 2
     # -------------------
     # 1 1 1 2 2 2 3 4 1 3
-    how.many.so.far <- function(g)
-    {
+    how.many.so.far <- function(g) {
         out <- NULL
         u <- unique(g)
         for (i in 1:length(u)) out[which(g==u[i])] <- 1:sum(g==u[i])
@@ -113,8 +105,7 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     }
 
     # turns the values in each group into their plotting points
-    grouping <- function(v, dif)
-    {
+    grouping <- function(v, dif) {
         vs <- sort(v)
         together <- c(FALSE, diff(vs) <= dif)
         g.id <- cumsum(!together)
@@ -128,14 +119,12 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     for (i in 1:ng) groups[[i]] <- grouping(groups[[i]], dist)
 
     # set up new plot
-    if (!add)
-    {
+    if (!add) {
         plot.new()
-        if (horizontal) {
+        if (horizontal)
             do.call("localWindow", c(list(ylim, xlim), args[namedargs]))
-        } else {
+        else
             do.call("localWindow", c(list(xlim, ylim), args[namedargs]))
-        }
     }
 
     # function to compute the jittering
@@ -144,8 +133,7 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     out <- list()
 
     Lme <- 0.2 * c(-1, 1)
-    for (i in 1:ng)
-    {
+    for (i in 1:ng) {
         to.plot <- groups[[i]]
         gs <- to.plot$g.si 
         hms <- to.plot$hm
@@ -153,55 +141,47 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
         y <- to.plot$vs
 
         if (type[i] == "bd") { # dots behind
-            if (horizontal) {
-            do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=my.gray), args[namedargs]))
-            } else {
+            if (horizontal)
+                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=my.gray), args[namedargs]))
+            else
                 do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=my.gray), args[namedargs]))
-            }
         }
-        if (type[i] %in% c("bd", "b")) # boxplot in front
-        {
+        if (type[i] %in% c("bd", "b")) { # boxplot in front
             outliers <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE, horizontal=horizontal), boxplot.pars))$out
-            if (type[i] == "b")
-            {
+            if (type[i] == "b") {
                 toplot <- rowSums(outer(y, outliers, "==")) == 1
-                if (horizontal) {
+                if (horizontal)
                     do.call("points", c(list(x=y[toplot], y=x[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), args[namedargs]))
-                } else {
+                else
                     do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), args[namedargs]))
-                }
             }
         }
         if (type[i] == "db") # boxplot behind
             do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.gray, outline=FALSE, horizontal=horizontal), boxplot.pars))
         if (type[i] %in% c("db", "d")) { # dots in front
-            if (horizontal) {
+            if (horizontal)
                 do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), args[namedargs]))
-            } else {
+            else
                 do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), args[namedargs]))
-            }
         }
         if (mean.line[i]) { # mean line
-            if (horizontal) {
+            if (horizontal)
                 do.call("lines", c(list(rep(mean(y), at[i]+Lme, 2)), mean.pars))
-            } else {
+            else
                 do.call("lines", c(list(at[i]+Lme, rep(mean(y), 2)), mean.pars))
-            }
         }
         if (median.line[i]) { # median line
-            if (horizontal) {
+            if (horizontal)
                 do.call("lines", c(list(rep(median(y), at[i]+Lme, 2)), median.pars))
-            } else {
+            else
                 do.call("lines", c(list(at[i]+Lme, rep(median(y), 2)), median.pars))
-            }
         }
 
         out[[i]] <- data.frame(to.plot, col=col[[i]], pch=pch[[i]])
     }
 
     # add axes
-    if (axes)
-    {
+    if (axes) {
         do.call("localAxis", c(list(side=1+horizontal, at=1:ng, labels=names, tcl=0), args[namedargs]))
         do.call("localAxis", c(list(side=2-horizontal), args[namedargs]))
     }
@@ -214,18 +194,16 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     # add titles
     if (ann)
     {
-        if (horizontal) {
+        if (horizontal)
             do.call("localTitle", c(list(main=main, sub=sub, xlab=ylab, ylab=xlab), args[namedargs]))
-        } else {
+        else
             do.call("localTitle", c(list(main=main, sub=sub, xlab=xlab, ylab=ylab), args[namedargs]))
-        }
     }
 
     invisible(out)
 }
 
-tatsukiplot.formula <- function(formula, data=NULL, ..., subset, na.action = NULL)
-{
+tatsukiplot.formula <- function(formula, data=NULL, ..., subset, na.action=NULL) {
     if (missing(formula) || (length(formula) != 3))
         stop("'formula' missing or incorrect")
     m <- match.call(expand.dots = FALSE)

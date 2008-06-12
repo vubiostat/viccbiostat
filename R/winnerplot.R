@@ -1,7 +1,5 @@
-winnerplot <- function(data, winner, legend=NULL, bin=NULL, xlim=NULL, pad=diff(bin), lty=par("lty"), lwd=par("lwd"), col=par("col"), add=FALSE, ...)
-{
-    if (missing(xlim))
-    {
+winnerplot <- function(data, winner, legend=NULL, bin=NULL, xlim=NULL, pad=diff(bin), lty=par("lty"), lwd=par("lwd"), col=par("col"), add=FALSE, ...) {
+    if (missing(xlim)) {
         if (is.null(pad))
             pad <- 5
         if (is.null(bin))
@@ -23,10 +21,7 @@ winnerplot <- function(data, winner, legend=NULL, bin=NULL, xlim=NULL, pad=diff(
         legend("topright", legend, lty=lty, lwd=lwd, col=col)
 }
 
-winnerplots <- function(data, winners, legend=NULL, bins=NULL, lty=1, lwd=1, col=1:6, ...)
-{
+winnerplots <- function(data, winners, legend=NULL, bins=NULL, lty=1, lwd=1, col=1:6, ...) {
     for (i in 1:length(winners))
-    {
         winnerplot(data=data, winner=winners[i], legend=legend, bin=bins[i,], lty=lty, lwd=lwd, col=col, add=FALSE, ...)
-    }
 }

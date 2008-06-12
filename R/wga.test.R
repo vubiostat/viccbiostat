@@ -1,5 +1,4 @@
-wga.test <- function(x, y, ...)
-{
+wga.test <- function(x, y, ...) {
     n1 <- length(x)
     n2 <- length(y)
     if (n1 < 2)
@@ -13,16 +12,10 @@ wga.test <- function(x, y, ...)
     dB <- abs(mean(x) - mean(y))
     denom <- (dw1 + dw2) / (t1 + t2)
     if (dB == 0)
-    {
         wga <- 0
-    }
     else if (denom == 0)
-    {
         wga <- 10000
-    }
     else
-    {
         wga <- dB / denom
-    }
     return(wga)
 }

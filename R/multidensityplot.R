@@ -1,5 +1,4 @@
-multidensityplot <- function(data, legend=NULL, type="l", lty=par("lty"), lwd=1, pch=NULL, col=1:6, ...)
-{
+multidensityplot <- function(data, legend=NULL, type="l", lty=par("lty"), lwd=1, pch=NULL, col=1:6, ...) {
     if (class(data[[1]]) == "density")
         dens <- data
     else

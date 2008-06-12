@@ -1,5 +1,4 @@
-info.test <- function(x, y, ...)
-{
+info.test <- function(x, y, ...) {
     nx <- length(x)
     ny <- length(y)
     if (nx < 1)

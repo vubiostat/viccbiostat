@@ -1,2 +1,1 @@
-.onUnload <- function(libpath)
-    library.dynam.unload("VICCBiostat", libpath)
+.onUnload <- function(libpath) library.dynam.unload("VICCBiostat", libpath)

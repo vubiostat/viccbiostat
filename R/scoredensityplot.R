@@ -1,5 +1,4 @@
-scoredensityplot <- function(x, y, z=NULL, main=NULL, legend=NULL, boxplots=TRUE, split.screen=TRUE, type="l", lty=c(1,2,1), lwd=c(1,1,3), pch=NULL, col=c("red","blue","green"), xlim=NULL, ylim=NULL, ...)
-{
+scoredensityplot <- function(x, y, z=NULL, main=NULL, legend=NULL, boxplots=TRUE, split.screen=TRUE, type="l", lty=c(1,2,1), lwd=c(1,1,3), pch=NULL, col=c("red","blue","green"), xlim=NULL, ylim=NULL, ...) {
     result <- list()
     result$density.x <- density(x)
     result$density.y <- density(y)
@@ -9,10 +8,8 @@ scoredensityplot <- function(x, y, z=NULL, main=NULL, legend=NULL, boxplots=TRUE
     xlim <- if (missing(xlim)) range(xm[is.finite(xm)]) else xlim
     ylim <- if (missing(ylim)) range(ym[is.finite(ym)]) else ylim
 
-    if (boxplots)
-    {
-        if (split.screen)
-        {
+    if (boxplots) {
+        if (split.screen) {
             mfrow <- par("mfrow")
             par(mfrow=c(2,1))
         }
