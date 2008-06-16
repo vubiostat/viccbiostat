@@ -11,7 +11,7 @@ info.test <- function(x, y, ...) {
     # A is for UPUP, B is for UPDOWN
     A <- grp[order(d, grp)]
     B <- grp[order(d,-grp)]
-    .C(infotest,
+    .C("_infotest",
         as.integer(A),
         as.integer(B),
         as.double(num),

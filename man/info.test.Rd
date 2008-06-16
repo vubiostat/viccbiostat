@@ -1,6 +1,5 @@
 \name{info.test}
 \alias{info.test}
-\alias{infotest}
 \title{InfoScore}
 \description{
   InfoScore method for high-dimensional data analysis.

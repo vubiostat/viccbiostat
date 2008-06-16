@@ -1,2 +1,2 @@
-useDynLib(VICCBiostat, infotest)
-exportPattern("^[^\\.]")
+useDynLib("VICCBiostat", "_infotest")
+exportPattern("^[^\\._]")
