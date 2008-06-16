@@ -91,7 +91,7 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     median.line <- rep(median.line, length.out=ng)
 
     # set defaults for dist and jit
-    if (is.null(dist) || is.na(dist)) dist <- diff(range(v)) / 100
+    if (is.null(dist) || is.na(dist)) dist <- diff(range(ylim)) / 100
     if (is.null(jit) || is.na(jit)) jit <- 0.025 * ng
 
     # 1 2 3 1 3 2 1 1 4 2
