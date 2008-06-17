@@ -11,7 +11,7 @@ normalize(x, margin, rename = TRUE, na.rm = TRUE)
   \item{x}{vector, matrix, or data.frame of numeric data.}
   \item{margin}{subscripts the normalization will be apply over.  \code{0} indicates all data, \code{1} indicates rows, and \code{2} indicates columns.}
   \item{rename}{whether or not to add '.std' to the margin names in the return value.  Ignored if margin is \code{0}.}
-  \item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds.}
+  \item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds.  Passed to \code{mean} and \code{sd}.}
 }
 \details{
   Uses the basic (x - mean(x))/sd(x) formula to normalize a set of data so its mean is 0 and standard deviation is 1.
