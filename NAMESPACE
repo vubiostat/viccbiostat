@@ -1,2 +1,3 @@
 useDynLib("VICCBiostat", "_infotest")
 exportPattern("^[^\\._]")
+S3method(plot, roc)
