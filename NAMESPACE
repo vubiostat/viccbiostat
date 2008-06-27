@@ -1,6 +1,6 @@
 useDynLib("VICCBiostat", "_infotest")
 
-export(accuracy, crossoverdesign, multidensityplot, normalize,
+export(accuracy, crossoverdesign, multidensityplot,
        scoredensityplot, winnerplot, winnerplots)
 
 S3method(order, data.frame)
