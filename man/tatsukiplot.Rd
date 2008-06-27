@@ -9,17 +9,15 @@
 \usage{
 tatsukiplot(x, \dots)
 
-\method{tatsukiplot}{formula}(formula, data = NULL, \dots,
-        subset, na.action = NULL)
+\method{tatsukiplot}{formula}(formula, data = NULL, \dots, subset, na.action = NULL)
 
-\method{tatsukiplot}{default}(x, \dots, type = "d", dist = NULL, jit = 0.05,
-        names, ylim = NULL, main = NULL, sub = NULL,
-        xlab = NULL, ylab = NULL, col = par("col"), pch = par("pch"),
-        group.col = FALSE, group.pch = FALSE, median.line = FALSE,
-        mean.line = FALSE, median.pars = list(col = par("col")),
-        mean.pars = median.pars, boxplot.pars = NULL, show.n = FALSE,
-        my.gray = gray(0.75), ann = par("ann"), axes = TRUE,
-        frame.plot = axes, add = FALSE, at = NULL, horizontal = FALSE)
+\method{tatsukiplot}{default}(x, \dots, type = "d", dist = NULL, jit = 0.05, names,
+            ylim = NULL, main = NULL, sub = NULL, xlab = NULL, ylab = NULL,
+            col = par("col"), pch = par("pch"), group.col = FALSE, group.pch = FALSE,
+            median.line = FALSE, mean.line = FALSE, median.pars = list(col = par("col")),
+            mean.pars = median.pars, boxplot.pars = NULL, show.n = FALSE,
+            my.gray = gray(0.75), ann = par("ann"), axes = TRUE,
+            frame.plot = axes, add = FALSE, at = NULL, horizontal = FALSE)
 }
 \arguments{
   \item{formula}{a formula, such as \code{y ~ grp}, where \code{y} is a numeric vector of data values to be split into groups according to the grouping variable \code{grp} (usually a factor).}
@@ -83,7 +81,6 @@ v <- rnorm(50, seq(66, 70, length=50), .2)
 g <- paste('Group', sample(LETTERS[1:5], 50, prob=c(.1,.2,.3,.3,.1), TRUE))
 sex <- sample(1:2, 50, TRUE)
 }
-tatsukiplot(v ~ g, dist=0.1, jit=0.1, ylab='Values', col=sex,
-        pch=c(1,19,3,8,15), group.pch=TRUE, cex=0.75)
+tatsukiplot(v ~ g, dist=0.1, jit=0.1, ylab='Values', col=sex, pch=c(1,19,3,8,15), group.pch=TRUE, cex=0.75)
 }
 \keyword{hplot}
