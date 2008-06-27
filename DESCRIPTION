@@ -3,7 +3,8 @@ Version: 0.0
 Title: Miscellaneous Functions
 Author: Will Gray <w.gray@vanderbilt.edu>
 Maintainer: Will Gray <w.gray@vanderbilt.edu>
-Depends: R (>= 2.0.0), combinat
+Depends: R (>= 2.0.0)
+Suggests: combinat
 Description: Useful functions from the VICC-Biostatistics group.
 License: GPL version 2 or newer.
 URL: http://biostat.mc.vanderbilt.edu/ViccBiostatR
