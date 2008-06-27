@@ -5,7 +5,7 @@
   Produce plot(s) of the given ROC object.
 }
 \usage{
-plot.roc(x, ...)
+\method{plot}{roc}(x, ...)
 }
 \arguments{
   \item{x}{an \code{\link{roc}} object.}

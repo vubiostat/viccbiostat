@@ -1,4 +1,4 @@
-order.data.frame <- function(x, na.last=TRUE, decreasing=FALSE) {
+order.data.frame <- function(x, ..., na.last=TRUE, decreasing=FALSE) {
     len <- dim(x)[2]
     len2 <- length(na.last)
     len3 <- length(decreasing)

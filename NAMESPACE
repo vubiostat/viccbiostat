@@ -1,3 +1,23 @@
 useDynLib("VICCBiostat", "_infotest")
-exportPattern("^[^\\._]")
+
+export(accuracy, crossoverdesign, multidensityplot, normalize,
+       scoredensityplot, winnerplot, winnerplots)
+
+S3method(order, data.frame)
+
+export(roc)
+S3method(roc, default)
+S3method(roc, formula)
 S3method(plot, roc)
+
+exportPattern("\\.test$")
+S3method(info.test, default)
+S3method(info.test, formula)
+S3method(huwright.test, default)
+S3method(huwright.test, formula)
+S3method(wga.test, default)
+S3method(wga.test, formula)
+
+export(tatsukiplot)
+S3method(tatsukiplot, default)
+S3method(tatsukiplot, formula)
