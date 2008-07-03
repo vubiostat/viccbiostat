@@ -9,7 +9,7 @@
 \usage{
 tatsukiplot(x, \dots)
 
-\method{tatsukiplot}{formula}(formula, data = NULL, \dots, subset, na.action = NULL)
+\method{tatsukiplot}{formula}(formula, data = NULL, \dots, subset)
 
 \method{tatsukiplot}{default}(x, \dots, type = "d", dist = NULL, jit = 0.05, names,
             ylim = NULL, main = NULL, sub = NULL, xlab = NULL, ylab = NULL,
@@ -23,7 +23,6 @@ tatsukiplot(x, \dots)
   \item{formula}{a formula, such as \code{y ~ grp}, where \code{y} is a numeric vector of data values to be split into groups according to the grouping variable \code{grp} (usually a factor).}
   \item{data}{a data.frame (or list) from which the variables in \code{formula} should be taken.}
   \item{subset}{an optional vector specifying a subset of observations to be used for plotting.}
-  \item{na.action}{a function which indicates what should happen when the data contain \code{NA}s.  The default is to ignore missing values in either the response or the group.}
   \item{x}{for specifying data from which the boxplots are to be produced.  Either a numeric vector, or a single list containing such vectors.  Additional unnamed arguments specify further data as separate vectors (each corresponding to a component dotplot).  \code{\link{NA}}s are allowed in the data.}
   \item{\dots}{For the \code{formula} method, named arguments to be passed to the default method.
 

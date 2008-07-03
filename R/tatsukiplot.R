@@ -85,6 +85,11 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     # split colors and plot characters into groups
     col <- split(col, g)
     pch <- split(pch, g)
+    # remove any NAs from the data and options
+    nonas <- lapply(groups, function(x) !is.na(x))
+    groups <- mapply("[", groups, nonas, SIMPLIFY=FALSE)
+    col <- mapply("[", col, nonas, SIMPLIFY=FALSE)
+    pch <- mapply("[", pch, nonas, SIMPLIFY=FALSE)
 
     # whether or not to display a mean and median line for each group
     mean.line <- rep(mean.line, length.out=ng) 
@@ -103,7 +108,6 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
         for (i in 1:length(u)) out[which(g==u[i])] <- 1:sum(g==u[i])
         out
     }
-
     # turns the values in each group into their plotting points
     grouping <- function(v, dif) {
         vs <- sort(v)
@@ -115,8 +119,7 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
         hmsf <- how.many.so.far(vg[,2])
         data.frame(vg, hmsf)
     }
-
-    for (i in 1:ng) groups[[i]] <- grouping(groups[[i]], dist)
+    groups <- lapply(groups, grouping, dif=dist)
 
     # set up new plot
     if (!add) {
@@ -203,27 +206,29 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     invisible(out)
 }
 
-tatsukiplot.formula <- function(formula, data=NULL, ..., subset, na.action=NULL) {
+tatsukiplot.formula <- function(formula, data=NULL, ..., subset) {
     if (missing(formula) || (length(formula) != 3))
         stop("'formula' missing or incorrect")
     m <- match.call(expand.dots = FALSE)
     if (is.matrix(eval(m$data, parent.frame())))
         m$data <- as.data.frame(data)
     m$... <- NULL
-    m$na.action <- na.action
+    m$na.action <- na.pass
     m[[1]] <- as.name("model.frame")
     mf <- eval(m, parent.frame())
     response <- attr(attr(mf, "terms"), "response")
     ## special handling for col and pch
     args <- list(...)
     n <- nrow(mf)
+    # rep as necessary
     col <- if ("col" %in% names(args)) args$col else par("col")
     pch <- if ("pch" %in% names(args)) args$pch else par("pch")
+    # pick out these options
     group.col <- if ("group.col" %in% names(args)) args$group.col else FALSE
     group.pch <- if ("group.pch" %in% names(args)) args$group.pch else FALSE
+    # reorder if necessary
     if (!group.col) args$col <- unlist(split(rep(col, length.out=n), mf[-response]))
     if (!group.pch) args$pch <- unlist(split(rep(pch, length.out=n), mf[-response]))
     ##
     do.call("tatsukiplot", c(list(split(mf[[response]], mf[-response])), args))
-    invisible(mf)
 }
