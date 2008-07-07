@@ -1,6 +1,6 @@
 #include <math.h>
 
-void fdrAdjust(double *q, int *n, int *stepUp) {
+void _fdrAdjustment(double *q, int *n, int *stepUp) {
     int i;
     double p = 1;
 
