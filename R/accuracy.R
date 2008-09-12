@@ -1,15 +1,15 @@
-accuracy <- function(known, predict) {
-    if (length(known) != length(predict))
+accuracy <- function(actual, prediction) {
+    if (length(actual) != length(prediction))
         stop("All arguments must have the same length.")
-    lvls <- union(levels(factor(known)), levels(factor(predict)))
-    known <- factor(known, lvls)
-    predict <- factor(predict, lvls)
-    tmp <- table(known, predict, exclude=NULL)
-    result <- c(overall = (tmp[1,1] + tmp[2,2]) / sum(tmp))
-    for (i in 1:length(lvls)) {
-        result <- c(result, tmp[i,i] / sum(tmp[i,]))
-        names(result)[i+1] <- lvls[i]
+    lvls <- union(levels(factor(actual, exclude=NULL)), levels(factor(prediction, exclude=NULL)))
+    actual <- factor(actual, lvls, exclude=NULL)
+    prediction <- factor(prediction, lvls, exclude=NULL)
+    tmp <- table(actual, prediction, exclude=NULL)
+    result <- diag(tmp) / rowSums(tmp)
+    if (any(is.na(lvls))) {
+        result <- result[-which(is.na(lvls))]
     }
+    result <- c(overall = sum(diag(tmp)) / sum(tmp), result)
     result[is.nan(result)] <- 0
-    return(result)
+    result
 }
