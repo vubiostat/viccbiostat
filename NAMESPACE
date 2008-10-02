@@ -17,6 +17,8 @@ S3method(huwright.test, default)
 S3method(huwright.test, formula)
 S3method(wga.test, default)
 S3method(wga.test, formula)
+S3method(wilcoxon.test, default)
+S3method(wilcoxon.test, formula)
 
 export(tatsukiplot)
 S3method(tatsukiplot, default)
