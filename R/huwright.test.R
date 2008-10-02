@@ -12,8 +12,8 @@
 }
 
 .getmusigma2mle <- function(x, tol) {
-    m <- dim(x)[1]
-    n <- dim(x)[2]
+    m <- nrow(x)
+    n <- ncol(x)
     v <- var(log(rchisq(10 ^ 6,  n - 1)))
     
     X.vector <- na.exclude(as.vector(x))

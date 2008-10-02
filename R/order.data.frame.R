@@ -1,5 +1,5 @@
 order.data.frame <- function(x, ..., na.last=TRUE, decreasing=FALSE) {
-    len <- dim(x)[2]
+    len <- ncol(x)
     len2 <- length(na.last)
     len3 <- length(decreasing)
     if (len < len2)
@@ -10,7 +10,7 @@ order.data.frame <- function(x, ..., na.last=TRUE, decreasing=FALSE) {
         decreasing <- decreasing[1 : len]
     if (len > len3)
         decreasing[(len3 + 1) : len] <- FALSE
-    ox <- 1:dim(x)[1]
+    ox <- 1:nrow(x)
     for (i in len:1) {
         ox <- order(x[,i], order(ox) * (1 - 2 * decreasing[i]), na.last=na.last[i], decreasing=decreasing[i])
     }
