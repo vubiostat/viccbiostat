@@ -131,7 +131,7 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     }
 
     # function to compute the jittering
-    jit.f2 <- function(g.si, hm.sf)  hm.sf - (g.si + 1) / 2
+    jit.f2 <- function(g.si, hm.sf) { hm.sf - (g.si + 1) / 2 }
 
     out <- list()
 

@@ -15,7 +15,7 @@ crossoverdesign <- function(s, t, permutations=FALSE) {
     if (permutations && require(combinat, warn.conflicts=FALSE)) {
         # use the permutations set of block permutations
         mats <- lapply(permn(t1), function(x) m[,c(1, x+1)])
-        matf <- function(b, e) mats[[b]][e,]
+        matf <- function(b, e) { mats[[b]][e,] }
         t1f <- factorial(t1)
         tf <- t1f * t
         n <- min(ceiling(s/t), t1f)
@@ -23,7 +23,7 @@ crossoverdesign <- function(s, t, permutations=FALSE) {
     } else {
         # use randomly reordered blocks
         blocks <- rep(replicate(ceiling(s/t), sample(t), FALSE), each=t)[sv]
-        matf <- function(b, e) m[e,b]
+        matf <- { function(b, e) m[e,b] }
     }
     t(mapply(matf, blocks, entries))
 }

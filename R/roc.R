@@ -48,8 +48,8 @@ roc.formula <- function(formula, data=NULL, ..., subset, na.action=NULL) {
 
 plot.roc <- function(x, ...) {
     plot.mine <- function(..., type, xlim, ylim, log, main="ROC",
-                        sub=paste("AUC =", x$auc), xlab="1 - spec",
-                        ylab="sens") {
+                          sub=paste("AUC =", x$auc), xlab="1 - spec",
+                          ylab="sens") {
         plot.default(1 - x$spec, x$sens, type="l", xlim=0:1,
             ylim=0:1, log="", main=main, sub=sub, xlab=xlab, ylab=ylab)
     }
