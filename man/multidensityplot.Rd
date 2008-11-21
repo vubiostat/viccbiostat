@@ -23,12 +23,6 @@ multidensityplot(data, legend = NULL, type = "l", lty = par("lty"),
 \value{
   list of the densities of the elements in \code{data} or \code{data} itself.
 }
-\author{
-  Will Gray\cr
-  Department of Biostatistics\cr
-  Vanderbilt University\cr
-  \email{w.gray@vanderbilt.edu}
-}
 \seealso{
   \code{\link{scoredensityplot}}
 }

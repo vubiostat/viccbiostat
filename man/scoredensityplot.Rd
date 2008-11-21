@@ -33,12 +33,6 @@ scoredensityplot(x, y, z = NULL, main = NULL, legend = NULL,
 \value{
   \item{density.x,density.y}{density of \code{x} and \code{y}, respectively.}
 }
-\author{
-  Will Gray\cr
-  Department of Biostatistics\cr
-  Vanderbilt University\cr
-  \email{w.gray@vanderbilt.edu}
-}
 \seealso{
   \code{\link{multidensityplot}}
 }

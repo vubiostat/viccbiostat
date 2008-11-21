@@ -17,12 +17,6 @@ winnerplots(data, winners, legend = NULL, bins = NULL, lty = 1,
   \item{col}{vector of colors.  Colors are used cyclically.}
   \item{\dots}{Graphical parameters (see \code{\link{par}}) and any further arguments of \code{\link{winnerplot}} or \code{\link{matplot}} may also be supplied as arguments to this function.}
 }
-\author{
-  Will Gray\cr
-  Department of Biostatistics\cr
-  Vanderbilt University\cr
-  \email{w.gray@vanderbilt.edu}
-}
 \seealso{
   \code{\link{winnerplot}}
 }

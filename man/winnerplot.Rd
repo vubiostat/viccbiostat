@@ -21,12 +21,6 @@ winnerplot(data, winner, legend = NULL, bin = NULL, xlim = NULL,
   \item{add}{logical.  If \code{TRUE}, plots are added to current one.  \code{legend} and \code{bin} are ignored.}
   \item{\dots}{Graphical parameters (see \code{\link{par}}) and any further arguments of \code{\link{matplot}} may also be supplied as arguments to this function.}
 }
-\author{
-  Will Gray\cr
-  Department of Biostatistics\cr
-  Vanderbilt University\cr
-  \email{w.gray@vanderbilt.edu}
-}
 \seealso{
   \code{\link{winnerplots}}
 }
