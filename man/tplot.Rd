@@ -1,23 +1,25 @@
-\name{tatsukiplot}
-\alias{tatsukiplot}
-\alias{tatsukiplot.formula}
-\alias{tatsukiplot.default}
+\name{tplot}
+\alias{tplot}
+\alias{tplot.formula}
+\alias{tplot.default}
 \title{Dot Plots}
 \description{
   Produce dot plot(s) of the given (grouped) values.
 }
 \usage{
-tatsukiplot(x, \dots)
+tplot(x, \dots)
 
-\method{tatsukiplot}{formula}(formula, data = NULL, \dots, subset)
+\method{tplot}{formula}(formula, data = NULL, \dots, subset)
 
-\method{tatsukiplot}{default}(x, \dots, type = "d", dist = NULL, jit = 0.05, names,
-            ylim = NULL, main = NULL, sub = NULL, xlab = NULL, ylab = NULL,
-            col = par("col"), pch = par("pch"), group.col = FALSE, group.pch = FALSE,
-            median.line = FALSE, mean.line = FALSE, median.pars = list(col = par("col")),
-            mean.pars = median.pars, boxplot.pars = NULL, show.n = FALSE,
-            my.gray = gray(0.75), ann = par("ann"), axes = TRUE,
-            frame.plot = axes, add = FALSE, at = NULL, horizontal = FALSE)
+\method{tplot}{default}(x, \dots, type = "d", dist = NULL, jit = 0.05, names,
+            xlim = NULL, ylim = NULL, main = NULL, sub = NULL, xlab = NULL,
+            ylab = NULL, col = par("col"), pch = par("pch"), group.col = FALSE,
+            group.pch = FALSE, median.line = FALSE, mean.line = FALSE,
+            median.pars = list(col = par("col")), mean.pars = median.pars,
+            boxplot.pars = NULL, show.n = FALSE, my.gray = gray(0.75),
+            ann = par("ann"), axes = TRUE, frame.plot = axes, add = FALSE,
+            at = NULL, horizontal = FALSE, panel.first = NULL,
+            panel.last = NULL)
 }
 \arguments{
   \item{formula}{a formula, such as \code{y ~ grp}, where \code{y} is a numeric vector of data values to be split into groups according to the grouping variable \code{grp} (usually a factor).}
@@ -35,6 +37,7 @@ tatsukiplot(x, \dots)
   \item{dist}{numeric value for a distance threshold for points to be jittered.  Defaults to \code{diff(range(x))/100}.}
   \item{jit}{numeric value of how much to jitter.}
   \item{names}{group labels which will be printed under each boxplot.}
+  \item{xlim}{the x limits of the plot.}
   \item{ylim}{the y limits of the plot.}
   \item{main}{a main title for the plot, see also \code{\link{title}}.}
   \item{sub}{a sub title for the plot.}
@@ -52,9 +55,11 @@ tatsukiplot(x, \dots)
   \item{ann}{a logical value indicating whether the default annotation (title and x and y axis labels) should appear on the plot.}
   \item{axes}{a logical value indicating whether both axes should be drawn on the plot.  Use graphical parameter \code{"xaxt"} or \code{"yaxt"} to suppress just one of the axes.}
   \item{frame.plot}{a logical value indicating whether a box should be drawn around the plot.}
-  \item{add}{logical, if true \emph{add} tatsukiplot to current plot.}
-  \item{at}{numeric vector giving the locations where the tatsukiplots should be drawn, particularly when \code{add = TRUE}; defaults to \code{1:n} where \code{n} is the number of groups.}
+  \item{add}{logical, if true \emph{add} tplot to current plot.}
+  \item{at}{numeric vector giving the locations where the tplots should be drawn, particularly when \code{add = TRUE}; defaults to \code{1:n} where \code{n} is the number of groups.}
   \item{horizontal}{logical indicating if the plots should be horizontal; default FALSE means vertical.}
+  \item{panel.first}{an expression to be evaluated after the plot axes are set up but before any plotting takes place. This can be useful for drawing background grids or scatterplot smooths.}
+  \item{panel.last}{an expression to be evaluated after plotting has taken place.}
 }
 \details{
   The arguments \code{type}, \code{col}, \code{pch} may be vectors and will be recycled.
@@ -80,6 +85,6 @@ v <- rnorm(50, seq(66, 70, length=50), .2)
 g <- paste('Group', sample(LETTERS[1:5], 50, prob=c(.1,.2,.3,.3,.1), TRUE))
 sex <- sample(1:2, 50, TRUE)
 }
-tatsukiplot(v ~ g, dist=0.1, jit=0.1, ylab='Values', col=sex, pch=c(1,19,3,8,15), group.pch=TRUE, cex=0.75)
+tplot(v ~ g, dist=0.1, jit=0.1, ylab='Values', col=sex, pch=c(1,19,3,8,15), group.pch=TRUE, cex=0.75)
 }
 \keyword{hplot}

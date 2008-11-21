@@ -1,7 +1,7 @@
-tatsukiplot <- function(x, ...)  UseMethod("tatsukiplot")
+tplot <- function(x, ...)  UseMethod("tplot")
 
-tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE) {
-    localAxis <- function(..., bg, cex, lty, lwd) axis(...)
+tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NULL, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE, panel.first=NULL, panel.last=NULL) {
+    localAxis <- function(..., bg, cex, lty, lwd, las) axis(..., las=0)
     localBox <- function(..., bg, cex, lty, lwd) box(...)
     localWindow <- function(..., bg, cex, lty, lwd) plot.window(...)
     localTitle <- function(..., bg, cex, lty, lwd) title(...)
@@ -39,7 +39,7 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
         r + pm * c(-1,1)
     }
     # set x scale
-    xlim <- c(0.5, ng+0.5)
+    if (is.null(xlim)) xlim <- c(0.5, ng+0.5)
 
     at <- if (is.null(at)) 1:ng else at
     if (length(at) != ng)
@@ -129,16 +129,17 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
         else
             do.call("localWindow", c(list(xlim, ylim), args[namedargs]))
     }
+    panel.first
 
     # function to compute the jittering
-    jit.f2 <- function(g.si, hm.sf) { hm.sf - (g.si + 1) / 2 }
+    jit.f2 <- function(g.si, hm.sf) hm.sf - (g.si + 1) / 2
 
     out <- list()
 
     Lme <- 0.2 * c(-1, 1)
     for (i in 1:ng) {
         to.plot <- groups[[i]]
-        gs <- to.plot$g.si 
+        gs <- to.plot$g.si
         hms <- to.plot$hm
         x <- rep(at[i], nrow(to.plot)) + jit.f2(gs, hms) * jit
         y <- to.plot$vs
@@ -182,6 +183,7 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
 
         out[[i]] <- data.frame(to.plot, col=col[[i]], pch=pch[[i]])
     }
+    panel.last
 
     # add axes
     if (axes) {
@@ -190,13 +192,12 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     }
     # optional sample sizes
     if (show.n)
-        do.call("localAxis", c(list(side=3+horizontal, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), args[namedargs], list(mgp=c(3,.5,1), las=0)))
+        do.call("localAxis", c(list(side=3+horizontal, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), args[namedargs], list(mgp=c(3,.5,1))))
     # add bounding box
     if (frame.plot)
         do.call("localBox", args[namedargs])
     # add titles
-    if (ann)
-    {
+    if (ann) {
         if (horizontal)
             do.call("localTitle", c(list(main=main, sub=sub, xlab=ylab, ylab=xlab), args[namedargs]))
         else
@@ -206,7 +207,7 @@ tatsukiplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, yl
     invisible(out)
 }
 
-tatsukiplot.formula <- function(formula, data=NULL, ..., subset) {
+tplot.formula <- function(formula, data=NULL, ..., subset) {
     if (missing(formula) || (length(formula) != 3))
         stop("'formula' missing or incorrect")
     m <- match.call(expand.dots = FALSE)
@@ -230,5 +231,5 @@ tatsukiplot.formula <- function(formula, data=NULL, ..., subset) {
     if (!group.col) args$col <- unlist(split(rep(col, length.out=n), mf[-response]))
     if (!group.pch) args$pch <- unlist(split(rep(pch, length.out=n), mf[-response]))
     ##
-    do.call("tatsukiplot", c(list(split(mf[[response]], mf[-response])), args))
+    do.call("tplot", c(list(split(mf[[response]], mf[-response])), args))
 }
