@@ -2,13 +2,7 @@ stratify <- function(..., n, RANDOMIZE=TRUE, drop=FALSE, sep=".", lex.order=FALS
     fs <- list(...)
     f <- unclass(interaction(fs, drop=drop, sep=sep, lex.order=lex.order))
     resample <- if (RANDOMIZE) {
-        function(x) {
-            if (length(x) <= 1) {
-                x
-            } else {
-                sample(x)
-            }
-        }
+        function(x) { sample(list(x))[[1]] }
     } else {
         function(x) { x }
     }
