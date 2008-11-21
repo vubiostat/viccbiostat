@@ -1,7 +1,7 @@
 useDynLib("VICCBiostat", "_infotest", "_fdrAdjustment")
 
-export(accuracy, crossoverdesign, fdrAdjustment, multidensityplot,
-       order.data.frame, scoredensityplot, winnerplot, winnerplots)
+export(accuracy, crossoverdesign, fdrAdjustment, order.data.frame, stratify)
+export(multidensityplot, scoredensityplot, winnerplot, winnerplots)
 
 export(roc)
 S3method(roc, default)
