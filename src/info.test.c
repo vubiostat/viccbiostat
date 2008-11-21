@@ -1,12 +1,10 @@
-#include <math.h>
-
-#define ln2 0.6931472
+#include <Rmath.h>
 
 double _entropy(double x) {
     if (x == 0.0 || x == 1.0)
         return 0.0;
     else
-        return -((1.0 - x) * log(1.0 - x) + x * log(x)) / ln2;
+        return -((1.0 - x) * log(1.0 - x) + x * log(x)) / M_LN2;
 }
 
 void _infotest(int *A, int *B, double *num, double *nx, double *info) {

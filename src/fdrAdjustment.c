@@ -1,4 +1,4 @@
-#include <math.h>
+#include <Rmath.h>
 
 void _fdrAdjustment(double *q, int *n, int *stepUp) {
     int i;
