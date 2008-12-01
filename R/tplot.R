@@ -1,7 +1,7 @@
 tplot <- function(x, ...)  UseMethod("tplot")
 
 tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NULL, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE, panel.first=NULL, panel.last=NULL) {
-    localAxis <- function(..., bg, cex, lty, lwd, las) axis(..., las=0)
+    localAxis <- function(..., bg, cex, lty, lwd) axis(...)
     localBox <- function(..., bg, cex, lty, lwd) box(...)
     localWindow <- function(..., bg, cex, lty, lwd) plot.window(...)
     localTitle <- function(..., bg, cex, lty, lwd) title(...)
@@ -13,6 +13,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
     groups <- if (is.list(x))
         x
     else args[!namedargs]
+    pars <- args[namedargs]
     if ((n <- length(groups)) == 0)
         stop("invalid first argument")
     if (length(class(groups)))
@@ -121,13 +122,13 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
     }
     groups <- lapply(groups, grouping, dif=dist)
 
-    # set up new plot
+    # set up new plot unless adding to existing one
     if (!add) {
         plot.new()
         if (horizontal)
-            do.call("localWindow", c(list(ylim, xlim), args[namedargs]))
+            do.call("localWindow", c(list(ylim, xlim), pars))
         else
-            do.call("localWindow", c(list(xlim, ylim), args[namedargs]))
+            do.call("localWindow", c(list(xlim, ylim), pars))
     }
     panel.first
 
@@ -146,27 +147,27 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
 
         if (type[i] == "bd") { # dots behind
             if (horizontal)
-                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=my.gray), args[namedargs]))
+                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=my.gray), pars))
             else
-                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=my.gray), args[namedargs]))
+                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=my.gray), pars))
         }
         if (type[i] %in% c("bd", "b")) { # boxplot in front
             outliers <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE, horizontal=horizontal), boxplot.pars))$out
             if (type[i] == "b") {
                 toplot <- rowSums(outer(y, outliers, "==")) == 1
                 if (horizontal)
-                    do.call("points", c(list(x=y[toplot], y=x[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), args[namedargs]))
+                    do.call("points", c(list(x=y[toplot], y=x[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
                 else
-                    do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), args[namedargs]))
+                    do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
             }
         }
         if (type[i] == "db") # boxplot behind
             do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.gray, outline=FALSE, horizontal=horizontal), boxplot.pars))
         if (type[i] %in% c("db", "d")) { # dots in front
             if (horizontal)
-                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), args[namedargs]))
+                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), pars))
             else
-                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), args[namedargs]))
+                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), pars))
         }
         if (mean.line[i]) { # mean line
             if (horizontal)
@@ -187,39 +188,53 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
 
     # add axes
     if (axes) {
-        do.call("localAxis", c(list(side=1+horizontal, at=1:ng, labels=names, tcl=0), args[namedargs]))
-        do.call("localAxis", c(list(side=2-horizontal), args[namedargs]))
+        do.call("localAxis", c(list(side=1+horizontal, at=1:ng, labels=names, tcl=0), pars))
+        do.call("localAxis", c(list(side=2-horizontal), pars))
     }
     # optional sample sizes
     if (show.n)
-        do.call("localAxis", c(list(side=3+horizontal, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), args[namedargs], list(mgp=c(3,.5,1))))
+        do.call("localAxis", c(list(side=3+horizontal, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), pars, list(mgp=c(3,.5,1))))
     # add bounding box
     if (frame.plot)
-        do.call("localBox", args[namedargs])
+        do.call("localBox", pars)
     # add titles
     if (ann) {
         if (horizontal)
-            do.call("localTitle", c(list(main=main, sub=sub, xlab=ylab, ylab=xlab), args[namedargs]))
+            do.call("localTitle", c(list(main=main, sub=sub, xlab=ylab, ylab=xlab), pars))
         else
-            do.call("localTitle", c(list(main=main, sub=sub, xlab=xlab, ylab=ylab), args[namedargs]))
+            do.call("localTitle", c(list(main=main, sub=sub, xlab=xlab, ylab=ylab), pars))
     }
 
     invisible(out)
 }
 
-tplot.formula <- function(formula, data=NULL, ..., subset) {
+tplot.formula <- function(formula, data=parent.frame(), ..., subset) {
     if (missing(formula) || (length(formula) != 3))
         stop("'formula' missing or incorrect")
+
+    enquote <- function(x) as.call(list(as.name("quote"), x))
+
     m <- match.call(expand.dots = FALSE)
     if (is.matrix(eval(m$data, parent.frame())))
         m$data <- as.data.frame(data)
+
+    args <- lapply(m$..., eval, data, parent.frame())
+    nmargs <- names(args)
+    if ("main" %in% nmargs) args[["main"]] <- enquote(args[["main"]])
+    if ("sub" %in% nmargs) args[["sub"]] <- enquote(args[["sub"]])
+    if ("xlab" %in% nmargs) args[["xlab"]] <- enquote(args[["xlab"]])
+    if ("ylab" %in% nmargs) args[["ylab"]] <- enquote(args[["ylab"]])
+
     m$... <- NULL
     m$na.action <- na.pass
+    subset.expr <- m$subset
+    m$subset <- NULL
+    require(stats, quietly=TRUE)
     m[[1]] <- as.name("model.frame")
     mf <- eval(m, parent.frame())
     response <- attr(attr(mf, "terms"), "response")
-    ## special handling for col and pch
-    args <- list(...)
+
+    ## special handling of col and pch
     n <- nrow(mf)
     # rep as necessary
     col <- if ("col" %in% names(args)) args$col else par("col")
@@ -230,6 +245,12 @@ tplot.formula <- function(formula, data=NULL, ..., subset) {
     # reorder if necessary
     if (!group.col) args$col <- unlist(split(rep(col, length.out=n), mf[-response]))
     if (!group.pch) args$pch <- unlist(split(rep(pch, length.out=n), mf[-response]))
-    ##
+    
+    if (!missing(subset)) {
+        s <- eval(subset.expr, data, parent.frame())
+        dosub <- function(x) if (length(x) == n) x[s] else x
+        args <- lapply(args, dosub)
+        mf <- mf[s,]
+    }
     do.call("tplot", c(list(split(mf[[response]], mf[-response])), args))
 }
