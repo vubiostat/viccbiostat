@@ -9,7 +9,7 @@
 \usage{
 tplot(x, \dots)
 
-\method{tplot}{formula}(formula, data = NULL, \dots, subset)
+\method{tplot}{formula}(formula, data = parent.frame(), \dots, subset)
 
 \method{tplot}{default}(x, \dots, type = "d", dist = NULL, jit = 0.05, names,
             xlim = NULL, ylim = NULL, main = NULL, sub = NULL, xlab = NULL,
