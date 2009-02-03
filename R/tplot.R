@@ -1,4 +1,4 @@
-tplot <- function(x, ...)  UseMethod("tplot")
+tplot <- function(x, ...) UseMethod("tplot")
 
 tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NULL, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE, panel.first=NULL, panel.last=NULL) {
     localAxis <- function(..., bg, cex, lty, lwd) axis(...)
@@ -89,11 +89,12 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
     # remove any NAs from the data and options
     nonas <- lapply(groups, function(x) !is.na(x))
     groups <- mapply("[", groups, nonas, SIMPLIFY=FALSE)
+    l <- sapply(groups, length)
     col <- mapply("[", col, nonas, SIMPLIFY=FALSE)
     pch <- mapply("[", pch, nonas, SIMPLIFY=FALSE)
 
     # whether or not to display a mean and median line for each group
-    mean.line <- rep(mean.line, length.out=ng) 
+    mean.line <- rep(mean.line, length.out=ng)
     median.line <- rep(median.line, length.out=ng)
 
     # set defaults for dist and jit
@@ -133,7 +134,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
     panel.first
 
     # function to compute the jittering
-    jit.f2 <- function(g.si, hm.sf) hm.sf - (g.si + 1) / 2
+    jit.f2 <- function(g.si, hm.sf) { hm.sf - (g.si + 1) / 2 }
 
     out <- list()
 
@@ -212,7 +213,7 @@ tplot.formula <- function(formula, data=parent.frame(), ..., subset) {
     if (missing(formula) || (length(formula) != 3))
         stop("'formula' missing or incorrect")
 
-    enquote <- function(x) as.call(list(as.name("quote"), x))
+    enquote <- function(x) { as.call(list(as.name("quote"), x)) }
 
     m <- match.call(expand.dots = FALSE)
     if (is.matrix(eval(m$data, parent.frame())))
@@ -245,10 +246,10 @@ tplot.formula <- function(formula, data=parent.frame(), ..., subset) {
     # reorder if necessary
     if (!group.col) args$col <- unlist(split(rep(col, length.out=n), mf[-response]))
     if (!group.pch) args$pch <- unlist(split(rep(pch, length.out=n), mf[-response]))
-    
+
     if (!missing(subset)) {
         s <- eval(subset.expr, data, parent.frame())
-        dosub <- function(x) if (length(x) == n) x[s] else x
+        dosub <- function(x) { if (length(x) == n) x[s] else x }
         args <- lapply(args, dosub)
         mf <- mf[s,]
     }
