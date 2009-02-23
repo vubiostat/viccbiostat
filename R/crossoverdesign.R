@@ -12,7 +12,7 @@ crossoverdesign <- function(s, t, permutations=FALSE) {
     m <- matrix(rep(1:t, times=t) + rep(1:t, each=t) - 2, t) %% t + 1
     # the ordering of samples within each block
     entries <- replicate(ceiling(s/t), sample(t))[sv]
-    if (permutations && require(combinat, warn.conflicts=FALSE)) {
+    if (permutations && require(combinat)) {
         # use the permutations set of block permutations
         mats <- lapply(permn(t1), function(x) m[,c(1, x+1)])
         matf <- function(b, e) { mats[[b]][e,] }
