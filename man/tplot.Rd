@@ -64,6 +64,9 @@ tplot(x, \dots)
 \details{
   The arguments \code{type}, \code{col}, \code{pch} may be vectors and will be recycled.
 }
+\value{
+  A list of data.frames of the plotting measurement, color, and character used for each datum, split by group.
+}
 \author{
   Tatsuki Koyama\cr
   Department of Biostatistics\cr
