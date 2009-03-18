@@ -1,6 +1,6 @@
-useDynLib("VICCBiostat", "_infotest", "_fdrAdjustment")
+useDynLib("VICCBiostat", "_infotest")
 
-export(accuracy, crossoverdesign, fdrAdjustment, order.data.frame, stratify)
+export(accuracy, crossoverdesign, order.data.frame, stratify)
 export(multidensityplot, scoredensityplot, winnerplot, winnerplots)
 
 export(roc)
