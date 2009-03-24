@@ -1,10 +1,11 @@
 Package: VICCBiostat
 Version: 1.0
+Date: 2009-03-31
 Title: Miscellaneous Functions
 Author: Will Gray <w.gray@vanderbilt.edu>
 Maintainer: Will Gray <w.gray@vanderbilt.edu>
-Depends: R (>= 2.0.0)
+Depends:
 Suggests: combinat
-Description: Useful functions from the VICC-Biostatistics group.
-License: GPL version 2 or newer.
+Description: Useful functions from the Vanderbilt-Ingram Cancer Biostatistics Center.
+License: GPL-2
 URL: http://biostat.mc.vanderbilt.edu/ViccBiostatR
