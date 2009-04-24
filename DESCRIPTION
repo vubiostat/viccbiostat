@@ -4,8 +4,7 @@ Date: 2009-03-31
 Title: Miscellaneous Functions
 Author: Will Gray <w.gray@vanderbilt.edu>
 Maintainer: Will Gray <w.gray@vanderbilt.edu>
-Depends:
-Suggests: combinat
+Suggests: combinat, grDevices, stats, RColorBrewer
 Description: Useful functions from the Vanderbilt-Ingram Cancer Biostatistics Center.
 License: GPL-2
 URL: http://biostat.mc.vanderbilt.edu/ViccBiostatR
