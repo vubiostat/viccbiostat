@@ -15,15 +15,15 @@
     m <- nrow(x)
     n <- ncol(x)
     v <- var(log(rchisq(10 ^ 6,  n - 1)))
-    
+
     X.vector <- na.exclude(as.vector(x))
     smallvalue <- quantile(X.vector[X.vector >= 0], 0.01)
     x[x < 0] <- smallvalue
-    
+
     xmean <- apply(x, 1, mean, na.rm = T)
     xvar <- apply(x, 1, var, na.rm = T)
     xvar[(!is.na(xmean)) & (is.na(xvar))] <- 0
-    
+
     idx <- (1:m)[!(is.na(xmean) | xvar == 0)]
     lsfitobj <- lsfit(log(xmean[idx]), log(xvar[idx]))
     xbetahat <- lsfitobj$coef[1:2]
@@ -74,20 +74,20 @@
     xs2.mle <- exp(xbeta.mle[1]) * xbar.mle ^ xbeta.mle[2]
     output <- list(xbar.mle,  xs2.mle,  xbeta.mle,  xd2hat)
     names(output) <- c("xbar.mle", "xs2.mle", "xbeta.mle", "xd2hat")
-    return (output)
+    return(output)
 }
 
 huwright.test <- function(x, ...) UseMethod("huwright.test")
 
 huwright.test.default <- function(x, y, tol=1, ...) {
     temp1 <- .getmusigma2mle(t(x), tol)
-    mu1.mle <- temp1$xbar.mle      
-    var1.mle <- temp1$xs2.mle      
+    mu1.mle <- temp1$xbar.mle
+    var1.mle <- temp1$xs2.mle
     temp2 <- .getmusigma2mle(t(y), tol)
-    mu2.mle <- temp2$xbar.mle      
-    var2.mle <- temp2$xs2.mle      
+    mu2.mle <- temp2$xbar.mle
+    var2.mle <- temp2$xs2.mle
     delta <- (mu1.mle - mu2.mle) / (sqrt((var1.mle + var2.mle) / 6))
-    return(abs(delta))
+    abs(delta)
 }
 
 huwright.test.formula <- function(formula, subset, na.action, ...) {
@@ -111,7 +111,5 @@ huwright.test.formula <- function(formula, subset, na.action, ...) {
     names(DATA) <- c("x", "y")
     y <- do.call("huwright.test", c(DATA, list(...)))
     y$data.name <- DNAME
-    if(length(y$estimate) == 2)
-        names(y$estimate) <- paste("mean in group", levels(g))
     y
 }

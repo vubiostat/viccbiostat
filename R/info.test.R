@@ -20,7 +20,7 @@ info.test.default <- function(x, y, ...) {
         as.double(nx),
         info = as.double(1)
     )$info
-    return(info)
+    info
 }
 
 info.test.formula <- function(formula, data, subset, na.action, ...) {
@@ -44,7 +44,5 @@ info.test.formula <- function(formula, data, subset, na.action, ...) {
     names(DATA) <- c("x", "y")
     y <- do.call("info.test", c(DATA, list(...)))
     y$data.name <- DNAME
-    if(length(y$estimate) == 2)
-        names(y$estimate) <- paste("mean in group", levels(g))
     y
 }

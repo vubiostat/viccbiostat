@@ -230,7 +230,7 @@ tplot.formula <- function(formula, data=parent.frame(), ..., subset) {
     m$na.action <- na.pass
     subset.expr <- m$subset
     m$subset <- NULL
-    require(stats, quietly=TRUE)
+    require(stats, quietly=TRUE) || stop("package 'stats' is missing")
     m[[1]] <- as.name("model.frame")
     mf <- eval(m, parent.frame())
     response <- attr(attr(mf, "terms"), "response")

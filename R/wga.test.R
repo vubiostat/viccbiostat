@@ -19,7 +19,7 @@ wga.test.default <- function(x, y, ...) {
         0
     else
         dB / denom
-    return(wga)
+    wga
 }
 
 wga.test.formula <- function(formula, data, subset, na.action, ...) {
@@ -43,7 +43,5 @@ wga.test.formula <- function(formula, data, subset, na.action, ...) {
     names(DATA) <- c("x", "y")
     y <- do.call("wga.test", c(DATA, list(...)))
     y$data.name <- DNAME
-    if(length(y$estimate) == 2)
-        names(y$estimate) <- paste("mean in group", levels(g))
     y
 }
