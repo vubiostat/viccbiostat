@@ -1,254 +1,154 @@
-QC<-function(dat, group=NULL, info=NULL, method=NULL, cutoff=NULL,rand=NULL,fixed=NULL,pt=NULL)
-  {
-        nrow <- dim(dat)[1]
-        ncol <- dim(dat)[2]
-        dat <- dat[3:ncol]
+QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa", "ICC", "CV"), cutoff=0, fixedEffect=1, randomEffect=NULL) {
 
-       if (is.null(dat))
-       {
-             stop("Please provide a dataset.")
-       }
+    method <- match.arg(method, several.ok=TRUE)
 
-       if (is.null(method))
-       {
-             stop("Please provide a method.")
-       }
+    ### Wrapper functions {{{1
 
-       if (is.null(group) || group == "cross")
-       {
-          if (method == "pearson" || method == "spearman")
-          {
-               result <- cor(dat, method=method)
-               avg = apply(result, 2, CalAvg)
-               return (avg)
-          }
-          else if (method == "kappa")
-          {
-               library(Design)
-               library(Hmisc)
-               library(chron)
-               library(e1071)
+    # calculate average of whole data set {{{2
+    CalAvg <- function(vec) {
+        (sum(vec) - 1) / (length(vec) - 1)
+    }
 
-                if (is.null(cutoff))
-                    stop("Please input a vaule to dichotomize data .")
-                else
-                    dat1 <- ifelse((dat > cutoff), 1, 0)
+    # correlation {{{2
+    Cor <- function(x, method) {
+        tmp <- data.frame(apply(cor(t(x), method=method), 2, CalAvg))
+        colnames(tmp) <- method
+        tmp
+    }
 
-                cnt = ncol-2
+    # CV {{{2
+    CV <- function(x) {
+        a <- apply(x, 1, sd)
+        b <- apply(x, 1, mean)
+        c <- a / b
+        data.frame(sd=a, mean=b, cv=c)
+    }
 
-                result = matrix(NA, nrow=cnt, ncol=1)
-                avg = matrix(NA,nrow=cnt,ncol=1)
+    # ICC {{{2
+    ICC <- function(x, fixedEffect, randomEffect) {
+        n <- nrow(x)
+        a <- matrix(numeric(2*n), ncol=2)
+        for (i in seq(n)) {
+            fml <- try(lme(x[i,] ~ fixedEffect, random= ~ 1 | randomEffect), silent=TRUE)
+            if (class(fml) != "try-error")
+                a <- as.numeric(VarCorr(fml)[,1])
+        }
+        data.frame(icc=(a[,1] / (a[,1] + a[,2])))
+    }
 
-                for (i in 1:cnt)
-                {
-                    for ( j in 1: cnt)
-                    {
-                      tabs <-table(dat1[,i],dat1[,j])
-                      result[j,] <-  as.numeric(classAgreement(tabs)[2])
-                    }
-                    avg[i,] = (sum(as.numeric(result))-1)/(cnt-1)
-                }
-                return (avg)
-          }
-          else if (method == "ICC")
-          {
-             if (is.null(rand) || is.null(fixed))
-            {
-              stop("Please provide random and fixed effects")
+    # kappa {{{2
+    Kappa <- function(x, cutoff) {
+        n <- nrow(x)
+        x <- ifelse(x > cutoff, 1, 0)
+        a <- numeric(n)
+        for (i in seq(n)) {
+            b <- numeric(n)
+            for (j in seq(n)) {
+                b[j] <- classAgreement(table(x[i,], x[j,]))$kappa
             }
+            a[i] <- CalAvg(res)
+        }
+        data.frame(kappa=a)
+    }
 
-            library(nlme)
-            library(gmodels)
+    ### }}}
 
-            randEffect = as.factor(rand)
-            fixedEffect = as.factor(fixed)
+    nrow <- nrow(x)
+    ncol <- ncol(x)
 
-            varcomp=matrix(NA,nrow=nrow,ncol=2)
+    if (is.null(group)) { # not within group
 
-            for (i in 1:nrow)
-            {
-              y=dat[i,]
-              y=as.numeric(y)
-              fm11=try(lme( y ~ fixedEffect, random =  ~1|randEffect),silent=T)
-              if (class(fm11)!="try-error")
-              {
-                va =VarCorr(fm11)
-                varcomp[i,]=as.numeric(va[c(1,2),1])
-              }
-            }
-              icc = varcomp[,1]/ (varcomp[,2]+ varcomp[,1])
-              return (icc)
-          }
-            else if (method == "CV")
-          {
-                 dat = t(dat)
-                 avg=matrix(NA,nrow=nrow,ncol=1)
-                 std = sd(dat)
+        for (method in methods) {
+            dat <- list()
 
-                 for (i in 1:nrow)
-                 {
-                  avg[i,1]=mean(dat[,i])
-                 }
-                  CV = std / avg
-                  colnames(CV) <- "CV"
-                  return (CV)
-          }
-          else
-          {
-              stop("Please provide correct method.")
-          }
-       }
-       else if (group == "within")
-       {
-              if (is.null(info))
-              {
-                 stop("Please provide clinical information.")
-              }
+            if (method %in% c("pearson", "spearman", "kendall")) {
 
-              if (length(dat) != length(info))
-              {
-                 stop("Length of dataset and group info do not match.")
-              }
+                dat <- cbind(dat, Cor(x, method=method))
 
-              if (method == "pearson" || method == "spearman")
-              {
-                li<-names(as.list(summary(as.factor(info))))
-                avg = matrix(NA, nrow=max(summary(as.factor(info))), ncol=length(li))
+            } else if (method == "kappa") {
 
-                for (i in 1:length(li))
-                {
-                  ind = which(info==li[i])
-                  subDat = dat[,ind]
+                if (require(e1071)) {
 
-                  result <- cor(subDat, method=method)
-                  avgtmp = as.numeric(apply(result, 2, CalAvg))
-                  if (length(avgtmp) < max(summary(as.factor(info))) )
-                  {
-                    avgtmp[(length(avgtmp)+1):max(summary(as.factor(info)))] = 0
-                  }
-                     avg[,i]=as.numeric(avgtmp)
+                    dat <- cbind(dat, Kappa(x, cutoff=cutoff))
 
+                } else {
+                    warning("package 'e1071' is missing (required for 'kappa')")
                 }
 
-                colnames(avg) = as.character(li)
-                return (avg)
-              }
+            } else if (method == "ICC") {
 
-              else if (method == "kappa")
-              {
-                  library(Design)
-                  library(Hmisc)
-                  library(chron)
-                  library(e1071)
-                    
-                   if (is.null(cutoff))
-                    dat1 <- ifelse((dat > 0), 1, 0)
-                   else
-                    dat1 <- ifelse((dat > cutoff), 1, 0)
-                  li<-names(as.list(summary(as.factor(info))))
-                  m = max(summary(as.factor(info)))
-                  result = matrix(NA, nrow=m, ncol=1)
-                  avg = matrix(NA, nrow = m, ncol=length(li))
+                if (require(nlme)) {
 
-                  for (l in 1:length(li))
-                  {
-                      ind = which(info==li[l])
-                      subDat = dat1[,ind]
-
-                    for (i in 1:length(ind))
-                    {
-                      for ( j in 1: length(ind))
-                      {
-                        tabs <-table(subDat[,i],subDat[,j])
-                        result[j,] <-  as.numeric(classAgreement(tabs)[2])
-                      }
-                      if (length(ind) < m )
-                      {
-                          result[(length(ind)+1):m] = 0
-                      }
-                      avg[i,l] = (sum(as.numeric(result))-1)/(length(ind)-1)
+                    if (is.null(rand) || is.null(fixed)) {
+                        warning("Please provide random and fixed effects")
+                        next
                     }
-                  }
-                    colnames(avg)=as.character(li)
-                    return (avg)
-              }
-               else if (method == "ICC")
-               {
 
-                  library(nlme)
-                  library(gmodels)
+                    randomEffect <- as.factor(randomEffect)
+                    fixedEffect <- as.factor(fixedEffect)
 
-                  li<-names(as.list(summary(as.factor(info))))
-                  varcomp=matrix(NA,nrow=nrow,ncol=2)
-                  icc = matrix(NA,nrow=nrow,ncol=length(li))
+                    dat <- cbind(dat, ICC(x, fixedEffect=fixedEffect, randomEffect=randomEffect))
 
-                  for (l in 1:length(li))
-                  {
-                    ind = which(info==li[l])
-                    subDat = dat[,ind]
-                    pts = pt[ind]
-                    for (i in 1:nrow)
-                    {
-                      y=subDat[i,]
-                      y=as.numeric(y)
-                      fm11=try(lme( y ~ 1, random =  ~1|pts),silent=T)
-                      if (class(fm11)!="try-error")
-                      {
-                        va =VarCorr(fm11)
-                        varcomp[i,]=as.numeric(va[c(1,2),1])
-                      }
-                    }
-                     icc[,l] = as.numeric(varcomp[,1]/ (varcomp[,2]+ varcomp[,1]))
-                  }
-                  colnames(icc) = as.character(li)
-                  return (icc)
-               }
-               else if (method == "CV")
-               {
+                } else {
+                    warning("package 'nlme' is missing (required for 'ICC')")
+                }
 
-                 li<-names(as.list(summary(as.factor(info))))
-                 avg = matrix(NA,nrow=nrow,ncol=1)
-                 cv=matrix(NA,nrow=nrow,ncol=length(li))
+            } else if (method == "CV") {
 
-                 for (l in 1:length(li))
-                 {
-                   ind = which(info==li[l])
-                   subDat = dat[,ind]
-                   subDat = t(subDat)
+                dat <- cbind(dat, CV(x, cutoff=cutoff))
 
-                   std = sd(subDat)
+            }
 
-                   for (i in 1:nrow)
-                   {
-                    avg[i,1]=mean(subDat[,i])
-                   }
-                    cv[,l] = std / avg
-                 }
-                  colnames(cv) = as.character(li)
-                  return (cv)
-               }
-               else
-               {
-                   stop("Please provide a correct method.")
-               }
-       }
-       else
-       {
-           stop("please provide correct group.")
-       }
- }
+        }
 
-# calculate average of whole data set
-CalAvg = function(vec)
-{
-    tmp = (sum(vec)-1)/(length(vec)-1)
-    return (tmp)
+    } else { # within group
+
+        group <- as.factor(group)
+        lvls <- levels(group)
+        nlvl <- length(lvls)
+
+        if (nrow != length(group)) stop("group and data are not the same size")
+
+        xl <- split(x, group)
+
+        for (method in methods) {
+            dat <- list()
+
+            if (method %in% c("pearson", "spearman", "kendall")) {
+
+                dat <- cbind(dat, unsplit(lapply(xl, Cor, method=method), group))
+
+            } else if (method == "kappa") {
+
+                if (require(e1071)) {
+
+                    dat <- cbind(dat, unsplit(lapply(xl, Kappa, cutoff=cutoff), group))
+
+                } else {
+                    warning("package 'e1071' is missing (required for 'kappa')")
+                }
+
+            } else if (method == "ICC") {
+
+                if (require(nlme)) {
+
+                    randomEffect <- as.factor(randomEffect)
+                    fixedEffect <- as.factor(fixedEffect)
+
+                    dat <- cbind(dat, unsplit(mapply(ICC, xl, list(fixedEffect), split(randomEffect, group)), group))
+
+                } else {
+                    warning("package 'nlme' is missing (required for 'ICC')")
+                }
+
+            } else if (method == "CV") {
+
+                dat <- cbind(dat, unsplit(lapply(xl, CV), group))
+
+            }
+        }
+    }
+
+    return(dat)
 }
-
-
-
-
-
-
-
 
