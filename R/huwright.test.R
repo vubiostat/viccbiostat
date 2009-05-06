@@ -104,7 +104,7 @@ huwright.test.formula <- function(formula, subset, na.action, ...) {
     DNAME <- paste(names(mf), collapse = " by ")
     names(mf) <- NULL
     response <- attr(attr(mf, "terms"), "response")
-    g <- factor(mf[[-response]])
+    g <- as.factor(mf[[-response]])
     if(nlevels(g) != 2)
         stop("grouping factor must have exactly 2 levels")
     DATA <- split(mf[[response]], g)
