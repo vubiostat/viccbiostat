@@ -1,77 +1,42 @@
-QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa", "ICC", "CV"), cutoff=0, fixedEffect=1, randomEffect=NULL) {
+QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa", "ICC", "CV"), cutoff=0, fixedEffect=1, randomEffect=NULL, silent=FALSE) {
 
-    method <- match.arg(method, several.ok=TRUE)
-
-    ### Wrapper functions {{{1
-
-    # calculate average of whole data set {{{2
-    CalAvg <- function(vec) {
-        (sum(vec) - 1) / (length(vec) - 1)
-    }
-
-    # correlation {{{2
-    Cor <- function(x, method) {
-        tmp <- data.frame(apply(cor(t(x), method=method), 2, CalAvg))
-        colnames(tmp) <- method
-        tmp
-    }
-
-    # CV {{{2
-    CV <- function(x) {
-        a <- apply(x, 1, sd)
-        b <- apply(x, 1, mean)
-        c <- a / b
-        data.frame(sd=a, mean=b, cv=c)
-    }
-
-    # ICC {{{2
-    ICC <- function(x, fixedEffect, randomEffect) {
-        n <- nrow(x)
-        a <- matrix(numeric(2*n), ncol=2)
-        for (i in seq(n)) {
-            fml <- try(lme(x[i,] ~ fixedEffect, random= ~ 1 | randomEffect), silent=TRUE)
-            if (class(fml) != "try-error")
-                a <- as.numeric(VarCorr(fml)[,1])
-        }
-        data.frame(icc=(a[,1] / (a[,1] + a[,2])))
-    }
-
-    # kappa {{{2
-    Kappa <- function(x, cutoff) {
-        n <- nrow(x)
-        x <- ifelse(x > cutoff, 1, 0)
-        a <- numeric(n)
-        for (i in seq(n)) {
-            b <- numeric(n)
-            for (j in seq(n)) {
-                b[j] <- classAgreement(table(x[i,], x[j,]))$kappa
-            }
-            a[i] <- CalAvg(res)
-        }
-        data.frame(kappa=a)
-    }
-
-    ### }}}
-
+    methods <- match.arg(methods, several.ok=TRUE)
     nrow <- nrow(x)
-    ncol <- ncol(x)
 
     if (is.null(group)) { # not within group
 
+        # calculate average of whole data set {{{1
+        CalAvg <- function(vec) {
+            (sum(vec) - 1) / (length(vec) - 1)
+        }
+
+        dat <- data.frame(row.names=rownames(x))
+
         for (method in methods) {
-            dat <- list()
+
+            tmp <- list()
 
             if (method %in% c("pearson", "spearman", "kendall")) {
 
-                dat <- cbind(dat, Cor(x, method=method))
+                tmp <- data.frame(apply(cor(t(x), method=method), 2, CalAvg))
+                colnames(tmp) <- method
 
             } else if (method == "kappa") {
 
                 if (require(e1071)) {
 
-                    dat <- cbind(dat, Kappa(x, cutoff=cutoff))
+                    x1 <- ifelse(x > cutoff, 1, 0)
+                    a <- numeric(nrow)
+                    for (i in seq(n)) {
+                        b <- numeric(nrow)
+                        for (j in seq(nrow)) {
+                            b[j] <- classAgreement(table(x1[i,], x1[j,]))$kappa
+                        }
+                        a[i] <- CalAvg(b)
+                    }
+                    tmp <- data.frame(kappa=a)
 
-                } else {
+                } else if (!silent) {
                     warning("package 'e1071' is missing (required for 'kappa')")
                 }
 
@@ -84,71 +49,62 @@ QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa
                         next
                     }
 
-                    randomEffect <- as.factor(randomEffect)
-                    fixedEffect <- as.factor(fixedEffect)
+                    #randomEffect <- as.factor(randomEffect)
+                    #fixedEffect <- as.factor(fixedEffect)
 
-                    dat <- cbind(dat, ICC(x, fixedEffect=fixedEffect, randomEffect=randomEffect))
+                    a <- matrix(numeric(2*nrow), ncol=2)
+                    for (i in seq(nrow)) {
+                        fml <- try(lme(x[i,] ~ fixedEffect, random= ~ 1 | randomEffect), silent=TRUE)
+                        if (class(fml) != "try-error")
+                            a <- as.numeric(VarCorr(fml)[,1])
+                    }
+                    tmp <- data.frame(icc=(a[,1] / (a[,1] + a[,2])))
 
-                } else {
+
+                } else if (!silent) {
                     warning("package 'nlme' is missing (required for 'ICC')")
                 }
 
             } else if (method == "CV") {
 
-                dat <- cbind(dat, CV(x, cutoff=cutoff))
+                a <- apply(x, 1, sd)
+                b <- apply(x, 1, mean)
+                c <- a / b
+                tmp <- data.frame(sd=a, mean=b, cv=c)
 
             }
 
+            dat <- cbind(dat, tmp)
         }
+
+        return(dat)
 
     } else { # within group
 
-        group <- as.factor(group)
-        lvls <- levels(group)
-        nlvl <- length(lvls)
-
         if (nrow != length(group)) stop("group and data are not the same size")
 
-        xl <- split(x, group)
+        group <- as.factor(group)
+        nlvl <- nlevels(group)
 
-        for (method in methods) {
-            dat <- list()
+        if (is.null(randomEffect))
+            rel <- rep(list(NULL, nlvl))
+        else
+            rel <- split(randomEffect, group)
 
-            if (method %in% c("pearson", "spearman", "kendall")) {
-
-                dat <- cbind(dat, unsplit(lapply(xl, Cor, method=method), group))
-
-            } else if (method == "kappa") {
-
-                if (require(e1071)) {
-
-                    dat <- cbind(dat, unsplit(lapply(xl, Kappa, cutoff=cutoff), group))
-
-                } else {
-                    warning("package 'e1071' is missing (required for 'kappa')")
-                }
-
-            } else if (method == "ICC") {
-
-                if (require(nlme)) {
-
-                    randomEffect <- as.factor(randomEffect)
-                    fixedEffect <- as.factor(fixedEffect)
-
-                    dat <- cbind(dat, unsplit(mapply(ICC, xl, list(fixedEffect), split(randomEffect, group)), group))
-
-                } else {
-                    warning("package 'nlme' is missing (required for 'ICC')")
-                }
-
-            } else if (method == "CV") {
-
-                dat <- cbind(dat, unsplit(lapply(xl, CV), group))
-
-            }
-        }
+        dat <- mapply(QC, x=split(x, group),
+                      randomEffect=rel,
+                      silent=c(silent, rep(TRUE, nlvl-1)),
+                      MoreArgs=list(group=NULL,
+                                    methods=methods,
+                                    cutoff=cutoff,
+                                    fixedEffect=fixedEffect),
+                      SIMPLIFY=FALSE)
+        # Manual unsplit
+        x <- dat[[1]][rep(NA, nrow),, drop=FALSE]
+        rownames(x) <- unsplit(lapply(dat, rownames), group)
+        split(x, group) <- dat
+        # Manual unsplit
+        return(x)
     }
-
-    return(dat)
 }
 
