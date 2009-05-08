@@ -1,4 +1,4 @@
-QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa", "ICC", "CV"), cutoff=0, fixedEffect=1, randomEffect=NULL, silent=FALSE) {
+QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa", "icc", "cv"), cutoff=0, fixedEffect=1, randomEffect=NULL, silent=FALSE) {
 
     methods <- match.arg(methods, several.ok=TRUE)
     nrow <- nrow(x)
@@ -40,7 +40,7 @@ QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa
                     warning("package 'e1071' is missing (required for 'kappa')")
                 }
 
-            } else if (method == "ICC") {
+            } else if (method == "icc") {
 
                 if (require(nlme)) {
 
@@ -54,18 +54,17 @@ QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa
 
                     a <- matrix(numeric(2*nrow), ncol=2)
                     for (i in seq(nrow)) {
-                        fml <- try(lme(x[i,] ~ fixedEffect, random= ~ 1 | randomEffect), silent=TRUE)
+                        fml <- try(lme(x[i,] ~ fixedEffect, random= ~1 | randomEffect), silent=TRUE)
                         if (class(fml) != "try-error")
                             a <- as.numeric(VarCorr(fml)[,1])
                     }
                     tmp <- data.frame(icc=(a[,1] / (a[,1] + a[,2])))
 
-
                 } else if (!silent) {
-                    warning("package 'nlme' is missing (required for 'ICC')")
+                    warning("package 'nlme' is missing (required for 'icc')")
                 }
 
-            } else if (method == "CV") {
+            } else if (method == "cv") {
 
                 a <- apply(x, 1, sd)
                 b <- apply(x, 1, mean)
