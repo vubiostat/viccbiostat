@@ -48,4 +48,4 @@ A \code{data.frame} of quality control metrics.
 }
 \keyword{utilities}
 \keyword{univar}
-\keyword{multivar}
+\keyword{multivariate}

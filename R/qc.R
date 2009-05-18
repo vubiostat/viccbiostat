@@ -27,7 +27,7 @@ QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa
 
                     x1 <- ifelse(x > cutoff, 1, 0)
                     a <- numeric(nrow)
-                    for (i in seq(n)) {
+                    for (i in seq(nrow)) {
                         b <- numeric(nrow)
                         for (j in seq(nrow)) {
                             b[j] <- classAgreement(table(x1[i,], x1[j,]))$kappa
@@ -44,7 +44,7 @@ QC <- function(x, group=NULL, methods=c("pearson", "spearman", "kendall", "kappa
 
                 if (require(nlme)) {
 
-                    if (is.null(rand) || is.null(fixed)) {
+                    if (is.null(randomEffect) || is.null(fixedEffect)) {
                         warning("Please provide random and fixed effects")
                         next
                     }
