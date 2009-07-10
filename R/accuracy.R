@@ -6,8 +6,8 @@ accuracy <- function(actual, prediction) {
     prediction <- factor(prediction, lvls, exclude=NULL)
     tmp <- table(actual, prediction, exclude=NULL)
     result <- diag(tmp) / rowSums(tmp)
-    if (any(is.na(lvls))) {
-        result <- result[-which(is.na(lvls))]
+    if (any(is.na(names(result)))) {
+        result <- result[-which(is.na(names(result)))]
     }
     result <- c(overall = sum(diag(tmp)) / sum(tmp), result)
     result[is.nan(result)] <- 0
