@@ -154,13 +154,11 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
         }
         if (type[i] %in% c("bd", "b")) { # boxplot in front
             outliers <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE, horizontal=horizontal), boxplot.pars))$out
-            if (type[i] == "b") {
-                toplot <- rowSums(outer(y, outliers, "==")) == 1
-                if (horizontal)
-                    do.call("points", c(list(x=y[toplot], y=x[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
-                else
-                    do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
-            }
+            toplot <- rowSums(outer(y, outliers, "==")) == 1
+            if (horizontal)
+                do.call("points", c(list(x=y[toplot], y=x[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
+            else
+                do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
         }
         if (type[i] == "db") # boxplot behind
             do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.gray, outline=FALSE, horizontal=horizontal), boxplot.pars))
