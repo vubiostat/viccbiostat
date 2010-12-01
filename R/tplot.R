@@ -170,13 +170,13 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
         }
         if (mean.line[i]) { # mean line
             if (horizontal)
-                do.call("lines", c(list(rep(mean(y), at[i]+Lme, 2)), mean.pars))
+                do.call("lines", c(list(rep(mean(y), 2), at[i]+Lme), mean.pars))
             else
                 do.call("lines", c(list(at[i]+Lme, rep(mean(y), 2)), mean.pars))
         }
         if (median.line[i]) { # median line
             if (horizontal)
-                do.call("lines", c(list(rep(median(y), at[i]+Lme, 2)), median.pars))
+                do.call("lines", c(list(rep(median(y), 2), at[i]+Lme), median.pars))
             else
                 do.call("lines", c(list(at[i]+Lme, rep(median(y), 2)), median.pars))
         }
