@@ -192,7 +192,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
     }
     # optional sample sizes
     if (show.n)
-        do.call("localAxis", c(list(side=3+horizontal, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), pars, list(mgp=c(3,.5,1))))
+        do.call("localAxis", c(list(side=3+horizontal, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), pars, list(mgp=c(3,.5,0))))
     # add bounding box
     if (frame.plot)
         do.call("localBox", pars)
