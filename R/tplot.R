@@ -31,6 +31,10 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
     g <- rep(1:ng, l) # groups as.numeric
     nv <- sum(l) # total count
 
+    at <- if (is.null(at)) 1:ng else at
+    if (length(at) != ng)
+        stop("'at' must have same length as the number of groups")
+
     # set y scale
     ylim <- if (!is.null(ylim))
         ylim
@@ -40,11 +44,10 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
         r + pm * c(-1,1)
     }
     # set x scale
-    if (is.null(xlim)) xlim <- c(0.5, ng+0.5)
-
-    at <- if (is.null(at)) 1:ng else at
-    if (length(at) != ng)
-        stop("'at' must have same length as the number of groups")
+    if (is.null(xlim)) {
+        if (is.null(at)) xlim <- c(0.5, ng+0.5)
+        else xlim <- c(0.5, max(at)+0.5)
+    }
 
     xlab <- if (is.null(xlab)) "" else xlab
     ylab <- if (is.null(ylab)) "" else ylab
@@ -187,12 +190,12 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
 
     # add axes
     if (axes) {
-        do.call("localAxis", c(list(side=1+horizontal, at=1:ng, labels=names, tcl=0), pars))
+        do.call("localAxis", c(list(side=1+horizontal, at=at, labels=names, tcl=0), pars))
         do.call("localAxis", c(list(side=2-horizontal), pars))
     }
     # optional sample sizes
     if (show.n)
-        do.call("localAxis", c(list(side=3+horizontal, at=1:ng, labels=paste("n=", l, sep=""), tcl=0), pars, list(mgp=c(3,.5,0))))
+        do.call("localAxis", c(list(side=3+horizontal, at=at, labels=paste("n=", l, sep=""), tcl=0), pars, list(mgp=c(3,.5,0))))
     # add bounding box
     if (frame.plot)
         do.call("localBox", pars)
