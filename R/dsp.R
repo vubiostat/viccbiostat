@@ -1,8 +1,6 @@
-## Scatter plot for discrete data
-## For something like baseball scores
-## Only works with integers...
+dsp <- function(x, ...) UseMethod("dsp")
 
-dsp <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
+dsp.default <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
     # Scatter plot for discrete data
     # Only works with 'integer-valued' data.
     if (any(x!=round(x), na.rm=T) | any(y!=round(y), na.rm=T)) { stop('This only works with integers.  Sorry.', '\n') }
@@ -86,4 +84,41 @@ dsp <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
     points(dat$x + coord[sc[dat$idx, 1]] + dat$lx, dat$y + coord[sc[dat$idx, 2]] + dat$ly, pch=dat$pch, col=dat$col, cex=p.cex)
 
     table(factor(y, levels=rev(min(y):max(y))), factor(x, levels=min(x):max(x)))
+}
+
+dsp.formula <- function(formula, data=parent.frame(), ..., subset) {
+    if (missing(formula) || (length(formula) != 3))
+        stop("'formula' missing or incorrect")
+
+    enquote <- function(x) { as.call(list(as.name("quote"), x)) }
+
+    m <- match.call(expand.dots = FALSE)
+    if (is.matrix(eval(m$data, parent.frame())))
+        m$data <- as.data.frame(data)
+
+    args <- lapply(m$..., eval, data, parent.frame())
+    nmargs <- names(args)
+    if ("main" %in% nmargs) args[["main"]] <- enquote(args[["main"]])
+    if ("sub" %in% nmargs) args[["sub"]] <- enquote(args[["sub"]])
+    if ("xlab" %in% nmargs) args[["xlab"]] <- enquote(args[["xlab"]])
+    if ("ylab" %in% nmargs) args[["ylab"]] <- enquote(args[["ylab"]])
+
+    m$... <- NULL
+    #m$na.action <- na.pass
+    subset.expr <- m$subset
+    m$subset <- NULL
+    require(stats, quietly=TRUE) || stop("package 'stats' is missing")
+    m[[1]] <- as.name("model.frame")
+    m <- as.call(c(as.list(m), list(na.action = NULL)))
+    mf <- eval(m, parent.frame())
+    response <- attr(attr(mf, "terms"), "response")
+
+    if (!missing(subset)) {
+        s <- eval(subset.expr, data, parent.frame())
+        n <- nrow(mf)
+        dosub <- function(x) { if (length(x) == n) x[s] else x }
+        args <- lapply(args, dosub)
+        mf <- mf[s,]
+    }
+    do.call("dsp", c(list(mf[[response]], mf[[-response]]), args))
 }
