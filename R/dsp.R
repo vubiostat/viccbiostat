@@ -68,7 +68,8 @@ dsp <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
         hm <- c(hm, rep(i, i))
     }
     dat$idx <- idx
-    dat$lo <- (box.size - ceiling(sqrt(hm))) / (box.size + 1) / 2 # local offset
+    dat$ly <- (box.size - ceiling(sqrt(hm))) / (box.size + 1) / 2 # local offset
+    dat$lx <- dat$ly + ((ceiling(sqrt(hm - 1)) ** 2 == hm - 1) & (hm > 1)) / (box.size + 1) / 2
     dat <- dat[order(dat$id),]
     dat$col <- p.col
     dat$pch <- p.pch
@@ -82,7 +83,7 @@ dsp <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
         }
     }
 
-    points(dat$x + coord[sc[dat$idx, 1]] + dat$lo, dat$y + coord[sc[dat$idx, 2]] + dat$lo, pch=dat$pch, col=dat$col, cex=p.cex)
+    points(dat$x + coord[sc[dat$idx, 1]] + dat$lx, dat$y + coord[sc[dat$idx, 2]] + dat$ly, pch=dat$pch, col=dat$col, cex=p.cex)
 
     table(factor(y, levels=rev(min(y):max(y))), factor(x, levels=min(x):max(x)))
 }
