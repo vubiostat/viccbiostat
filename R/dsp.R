@@ -1,6 +1,6 @@
 dsp <- function(x, ...) UseMethod("dsp")
 
-dsp.default <- function(x, y, bkgr=TRUE, pch=19, col=1, cex=.8, ...) {
+dsp.default <- function(x, y, bkgr=TRUE, col=1, pch=19, cex=0.8, ...) {
     # Scatter plot for discrete data
     # Only works with 'integer-valued' data.
     if (any(x!=round(x), na.rm=TRUE) | any(y!=round(y), na.rm=TRUE)) { stop('This only works with integers.  Sorry.', '\n') }

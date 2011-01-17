@@ -83,11 +83,14 @@ tplot(x, \dots)
 }
 \examples{
 \dontshow{
-set.seed(5)
-v <- rnorm(50, seq(66, 70, length=50), .2)
-g <- paste('Group', sample(LETTERS[1:5], 50, prob=c(.1,.2,.3,.3,.1), TRUE))
-sex <- sample(1:2, 50, TRUE)
+set.seed(100)
+age <- rnorm(80, rep(c(26,36), c(70,10)), 4)
+sex <- sample(c('Female','Male'), 80, TRUE)
+group <- paste('Group', sample(1:4, 40, prob=c(2,5,4,1), replace=TRUE))
 }
-tplot(v ~ g, dist=0.1, jit=0.1, ylab='Values', col=sex, pch=c(1,19,3,8,15), group.pch=TRUE, cex=0.75)
+tplot(age ~ group, show.n=TRUE, type=c('db','db','db','d'), col=sex, dist=0.2, jit=0.05, las=1, pch=19)
+\dontshow{
+legend('topright', pch=19, col=1:2, legend=c('Female','Male'))
+}
 }
 \keyword{hplot}
