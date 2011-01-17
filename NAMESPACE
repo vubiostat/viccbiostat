@@ -21,3 +21,7 @@ S3method(wilcoxon.test, formula)
 export(tplot)
 S3method(tplot, default)
 S3method(tplot, formula)
+
+export(dsp)
+S3method(dsp, default)
+S3method(dsp, formula)
