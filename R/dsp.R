@@ -1,6 +1,6 @@
 dsp <- function(x, ...) UseMethod("dsp")
 
-dsp.default <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
+dsp.default <- function(x, y, pch=19, col=1, cex=.8, bkgr=T, ...) {
     # Scatter plot for discrete data
     # Only works with 'integer-valued' data.
     if (any(x!=round(x), na.rm=T) | any(y!=round(y), na.rm=T)) { stop('This only works with integers.  Sorry.', '\n') }
@@ -8,15 +8,15 @@ dsp.default <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
     L <- length(x)
     cc <- complete.cases(x, y)
 
-    if (length(p.pch) < L) { p.pch <- rep(p.pch, length.out=L) }
-    if (length(p.col) < L) { p.col <- rep(p.col, length.out=L) }
-    if (length(p.cex) < L) { p.cex <- rep(p.cex, length.out=L) }
+    if (length(pch) < L) { pch <- rep(pch, length.out=L) }
+    if (length(col) < L) { col <- rep(col, length.out=L) }
+    if (length(cex) < L) { cex <- rep(cex, length.out=L) }
 
     x <- x[cc]
     y <- y[cc]
-    p.pch <- p.pch[cc]
-    p.col <- p.col[cc]
-    p.cex <- p.cex[cc]
+    pch <- pch[cc]
+    col <- col[cc]
+    cex <- cex[cc]
 
     x.levels <- sort(unique(x))
     y.levels <- sort(unique(y))
@@ -69,8 +69,8 @@ dsp.default <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
     dat$ly <- (box.size - ceiling(sqrt(hm))) / (box.size + 1) / 2 # local offset
     dat$lx <- dat$ly + ((ceiling(sqrt(hm - 1)) ** 2 == hm - 1) & (hm > 1)) / (box.size + 1) / 2
     dat <- dat[order(dat$id),]
-    dat$col <- p.col
-    dat$pch <- p.pch
+    dat$col <- col
+    dat$pch <- pch
 
     if (bkgr) {
         for (i in x.levels) {
@@ -81,7 +81,7 @@ dsp.default <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
         }
     }
 
-    points(dat$x + coord[sc[dat$idx, 1]] + dat$lx, dat$y + coord[sc[dat$idx, 2]] + dat$ly, pch=dat$pch, col=dat$col, cex=p.cex)
+    points(dat$x + coord[sc[dat$idx, 1]] + dat$lx, dat$y + coord[sc[dat$idx, 2]] + dat$ly, pch=dat$pch, col=dat$col, cex=cex)
 
     table(factor(y, levels=rev(min(y):max(y))), factor(x, levels=min(x):max(x)))
 }
