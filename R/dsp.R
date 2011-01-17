@@ -1,9 +1,9 @@
 dsp <- function(x, ...) UseMethod("dsp")
 
-dsp.default <- function(x, y, pch=19, col=1, cex=.8, bkgr=T, ...) {
+dsp.default <- function(x, y, bkgr=TRUE, pch=19, col=1, cex=.8, ...) {
     # Scatter plot for discrete data
     # Only works with 'integer-valued' data.
-    if (any(x!=round(x), na.rm=T) | any(y!=round(y), na.rm=T)) { stop('This only works with integers.  Sorry.', '\n') }
+    if (any(x!=round(x), na.rm=TRUE) | any(y!=round(y), na.rm=TRUE)) { stop('This only works with integers.  Sorry.', '\n') }
 
     L <- length(x)
     cc <- complete.cases(x, y)
@@ -26,8 +26,8 @@ dsp.default <- function(x, y, pch=19, col=1, cex=.8, bkgr=T, ...) {
     X <- range(x) + c(0, 1)
     Y <- range(y) + c(0, 1)
     plot(X, Y, las=1, type='n', xaxs='i', yaxs='i', bty='n', xaxt='n', yaxt='n', ...)
-    axis(1, at=pretty(x)+.5, labels=pretty(x), tick=F, las=1)
-    axis(2, at=pretty(y)+.5, labels=pretty(y), tick=F, las=1)
+    axis(1, at=pretty(x)+.5, labels=pretty(x), tick=FALSE, las=1)
+    axis(2, at=pretty(y)+.5, labels=pretty(y), tick=FALSE, las=1)
 
     if (!bkgr) {
         for (i in y.levels) { segments(min(x), i, max(x), i, col=grey(.9)) }
