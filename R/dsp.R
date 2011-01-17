@@ -62,10 +62,13 @@ dsp <- function(x, y, p.pch=19, p.col=1, p.cex=.8, bkgr=T, ...) {
     within <- c(t(tab))
     within <- within[within > 0]
     idx <- NULL
+    hm <- NULL
     for (i in within) {
         idx <- c(idx, 1:i) # index within category
+        hm <- c(hm, rep(i, i))
     }
     dat$idx <- idx
+    dat$lo <- (box.size - ceiling(sqrt(hm))) / (box.size + 1) / 2 # local offset
     dat <- dat[order(dat$id),]
     dat$col <- p.col
     dat$pch <- p.pch
