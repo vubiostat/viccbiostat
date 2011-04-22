@@ -1,6 +1,6 @@
 tplot <- function(x, ...) UseMethod("tplot")
 
-tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NULL, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), group.col=FALSE, group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE, panel.first=NULL, panel.last=NULL) {
+tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NULL, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), backcol=gray(.75), group.col=FALSE, group.pch=FALSE, group.backcol=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE, panel.first=NULL, panel.last=NULL) {
     localAxis <- function(..., bg, cex, lty, lwd) axis(...)
     localBox <- function(..., bg, cex, lty, lwd) box(...)
     localWindow <- function(..., bg, cex, lty, lwd) plot.window(...)
@@ -86,15 +86,31 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
         pch <- rep(pch, length.out=nv)
     }
 
+    # Use background colors by group
+    if (group.backcol) {
+        if (length(backcol) != ng)
+            warning("length of 'backcol' does not match the number of groups")
+        g.backcol <- rep(backcol, length.out=ng)
+        backcol <- rep(g.backcol, l)
+    # Use background colors by individual or global
+    } else {
+        if((length(backcol) > 1) && (length(backcol) != nv))
+            warning("length of 'backcol' does not match the number of data points")
+        backcol <- rep(backcol, length.out=nv)
+        g.backcol <- rep(1, length.out=ng)
+    }
+
     # split colors and plot characters into groups
     col <- split(col, g)
     pch <- split(pch, g)
+    backcol <- split(backcol, g)
     # remove any NAs from the data and options
     nonas <- lapply(groups, function(x) !is.na(x))
     groups <- mapply("[", groups, nonas, SIMPLIFY=FALSE)
     l <- sapply(groups, length)
     col <- mapply("[", col, nonas, SIMPLIFY=FALSE)
     pch <- mapply("[", pch, nonas, SIMPLIFY=FALSE)
+    backcol <- mapply("[", backcol, nonas, SIMPLIFY=FALSE)
 
     # whether or not to display a mean and median line for each group
     mean.line <- rep(mean.line, length.out=ng)
@@ -151,9 +167,9 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
 
         if (type[i] == "bd") { # dots behind
             if (horizontal)
-                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=my.gray), pars))
+                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=backcol[[i]]), pars))
             else
-                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=my.gray), pars))
+                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=backcol[[i]]), pars))
         }
         if (type[i] %in% c("bd", "b")) { # boxplot in front
             outliers <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE, horizontal=horizontal), boxplot.pars))$out
@@ -164,7 +180,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
                 do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
         }
         if (type[i] == "db") # boxplot behind
-            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=my.gray, outline=FALSE, horizontal=horizontal), boxplot.pars))
+            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.backcol[[i]], outline=FALSE, horizontal=horizontal), boxplot.pars))
         if (type[i] %in% c("db", "d")) { # dots in front
             if (horizontal)
                 do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), pars))

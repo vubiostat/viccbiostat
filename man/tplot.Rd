@@ -13,13 +13,12 @@ tplot(x, \dots)
 
 \method{tplot}{default}(x, \dots, type = "d", dist = NULL, jit = 0.05, names,
             xlim = NULL, ylim = NULL, main = NULL, sub = NULL, xlab = NULL,
-            ylab = NULL, col = par("col"), pch = par("pch"), group.col = FALSE,
-            group.pch = FALSE, median.line = FALSE, mean.line = FALSE,
-            median.pars = list(col = par("col")), mean.pars = median.pars,
-            boxplot.pars = NULL, show.n = FALSE, my.gray = gray(0.75),
+            ylab = NULL, col = par("col"), pch = par("pch"), col = par("col"),
+            group.col = FALSE, group.pch = FALSE, group.col = FALSE,
+            median.line = FALSE, mean.line = FALSE, median.pars = list(col = par("col")),
+            mean.pars = median.pars, boxplot.pars = NULL, show.n = FALSE,
             ann = par("ann"), axes = TRUE, frame.plot = axes, add = FALSE,
-            at = NULL, horizontal = FALSE, panel.first = NULL,
-            panel.last = NULL)
+            at = NULL, horizontal = FALSE, panel.first = NULL, panel.last = NULL)
 }
 \arguments{
   \item{formula}{a formula, such as \code{y ~ grp}, where \code{y} is a numeric vector of data values to be split into groups according to the grouping variable \code{grp} (usually a factor).}
@@ -43,15 +42,16 @@ tplot(x, \dots)
   \item{sub}{a sub title for the plot.}
   \item{xlab}{a label for the x axis, defaults to nothing.}
   \item{ylab}{a label for the y axis, defaults to nothing.}
-  \item{col}{color code or name, see \code{\link{colors}}, \code{\link{palette}}.}
+  \item{col}{color code or name, see \code{\link{colors}}, \code{\link{palette}}.  Specifies the foreground plot color.}
   \item{pch}{character or integer code for kind of points, see \code{\link{points.default}}.}
+  \item{backcol}{color code or name, see \code{\link{colors}}, \code{\link{palette}}.  Specifies the background plot color.}
   \item{group.col}{a logical value indicating whether values in \code{col} correspond to individual values or groups of values.}
   \item{group.pch}{a logical value indicating whether values in \code{pch} correspond to individual values or groups of values.}
+  \item{group.backcol}{a logical value indicating whether values in \code{backcol} correspond to individual values or groups of values.}
   \item{median.line, mean.line}{a logical value indicating whether the medians and or means should be plotted.}
   \item{median.pars, mean.pars}{additional graphical parameters to pass to \code{\link{lines}}.}
   \item{boxplot.pars}{additional graphical parameters to pass to \code{\link{boxplot}}.}
   \item{show.n}{a logical value indicating whether there the sample sizes should be printed along axis 3.}
-  \item{my.gray}{color code or name, see \code{\link{colors}}, \code{link{pallette}}.  The color of the secondary (background) plots.}
   \item{ann}{a logical value indicating whether the default annotation (title and x and y axis labels) should appear on the plot.}
   \item{axes}{a logical value indicating whether both axes should be drawn on the plot.  Use graphical parameter \code{"xaxt"} or \code{"yaxt"} to suppress just one of the axes.}
   \item{frame.plot}{a logical value indicating whether a box should be drawn around the plot.}
