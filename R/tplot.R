@@ -1,6 +1,6 @@
 tplot <- function(x, ...) UseMethod("tplot")
 
-tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NULL, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=par("col"), pch=par("pch"), backcol=gray(.75), group.col=FALSE, group.pch=FALSE, group.backcol=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE, panel.first=NULL, panel.last=NULL) {
+tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.001, names, xlim=NULL, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=NULL, group.col=FALSE, boxcol=NULL, boxborder=NULL, pch=par("pch"), group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(0.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE, panel.first=NULL, panel.last=NULL) {
     localAxis <- function(..., bg, cex, lty, lwd) axis(...)
     localBox <- function(..., bg, cex, lty, lwd) box(...)
     localWindow <- function(..., bg, cex, lty, lwd) plot.window(...)
@@ -31,17 +31,15 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
     g <- rep(1:ng, l) # groups as.numeric
     nv <- sum(l) # total count
 
-    at <- if (is.null(at)) 1:ng else at
+    if (is.null(at)) at <- 1:ng
     if (length(at) != ng)
         stop("'at' must have same length as the number of groups")
 
     # set y scale
-    ylim <- if (!is.null(ylim))
-        ylim
-    else {
+    if (is.null(ylim)) {
         r <- range(groups, na.rm=TRUE)
         pm <- diff(r) / 20
-        r + pm * c(-1,1)
+        ylim <- r + pm * c(-1,1)
     }
     # set x scale
     if (is.null(xlim)) {
@@ -49,16 +47,35 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
         else xlim <- c(0.5, max(at)+0.5)
     }
 
-    xlab <- if (is.null(xlab)) "" else xlab
-    ylab <- if (is.null(ylab)) "" else ylab
-    main <- if (is.null(main)) "" else main
-    sub <- if (is.null(sub)) "" else sub
+    if (is.null(xlab)) xlab <- ""
+    if (is.null(ylab)) ylab <- ""
+    if (is.null(main)) main <- ""
+    if (is.null(sub)) sub <- ""
 
     type <- match.arg(type, choices=c("d","db","bd","b"), several.ok=TRUE)
     # type of plot for each group
     if ((length(type) > 1) && (length(type) != ng))
         warning("length of 'type' does not match the number of groups")
     type <- rep(type, length.out=ng)
+
+    # Handle default colors
+    defcols <- c(my.gray, par("col"))
+    # use 50% gray for box in back, otherwise default color
+    if (is.null(boxborder))
+        boxborder <- defcols[2-grepl(".b", type)]
+    # use 50% gray for dots in back, otherwise default color
+    if (is.null(col)) {
+        col <- defcols[2-grepl(".d", type)]
+        group.col <- TRUE
+    }
+
+    if (length(boxborder) != ng)
+        warning("length of 'boxborder' does not match the number of groups")
+    boxborder <- rep(boxborder, length.out=ng)
+
+    if (!is.null(boxcol) && length(boxcol) != ng)
+        warning("length of 'boxcol' does not match the number of groups")
+    boxcol <- rep(boxcol, length.out=ng)
 
     # Use colors by group
     if (group.col) {
@@ -86,31 +103,15 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
         pch <- rep(pch, length.out=nv)
     }
 
-    # Use background colors by group
-    if (group.backcol) {
-        if (length(backcol) != ng)
-            warning("length of 'backcol' does not match the number of groups")
-        g.backcol <- rep(backcol, length.out=ng)
-        backcol <- rep(g.backcol, l)
-    # Use background colors by individual or global
-    } else {
-        if((length(backcol) > 1) && (length(backcol) != nv))
-            warning("length of 'backcol' does not match the number of data points")
-        backcol <- rep(backcol, length.out=nv)
-        g.backcol <- rep(1, length.out=ng)
-    }
-
     # split colors and plot characters into groups
     col <- split(col, g)
     pch <- split(pch, g)
-    backcol <- split(backcol, g)
     # remove any NAs from the data and options
     nonas <- lapply(groups, function(x) !is.na(x))
     groups <- mapply("[", groups, nonas, SIMPLIFY=FALSE)
     l <- sapply(groups, length)
     col <- mapply("[", col, nonas, SIMPLIFY=FALSE)
     pch <- mapply("[", pch, nonas, SIMPLIFY=FALSE)
-    backcol <- mapply("[", backcol, nonas, SIMPLIFY=FALSE)
 
     # whether or not to display a mean and median line for each group
     mean.line <- rep(mean.line, length.out=ng)
@@ -167,20 +168,20 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.05, names, xlim=NUL
 
         if (type[i] == "bd") { # dots behind
             if (horizontal)
-                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=backcol[[i]]), pars))
+                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), pars))
             else
-                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=backcol[[i]]), pars))
+                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), pars))
         }
         if (type[i] %in% c("bd", "b")) { # boxplot in front
-            outliers <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.col[i], outline=FALSE, horizontal=horizontal), boxplot.pars))$out
-            toplot <- rowSums(outer(y, outliers, "==")) == 1
+            boxplotout <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, col=boxcol[i], border=boxborder[i], outline=FALSE, horizontal=horizontal), boxplot.pars))
+            toplot <- (y > boxplotout$stats[5,]) | (y < boxplotout$stats[1,])
             if (horizontal)
                 do.call("points", c(list(x=y[toplot], y=x[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
             else
                 do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
         }
         if (type[i] == "db") # boxplot behind
-            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, border=g.backcol[[i]], outline=FALSE, horizontal=horizontal), boxplot.pars))
+            do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, col=boxcol[i], border=boxborder[i], outline=FALSE, horizontal=horizontal), boxplot.pars))
         if (type[i] %in% c("db", "d")) { # dots in front
             if (horizontal)
                 do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), pars))
@@ -254,15 +255,14 @@ tplot.formula <- function(formula, data=parent.frame(), ..., subset) {
 
     ## special handling of col and pch
     n <- nrow(mf)
-    # rep as necessary
-    col <- if ("col" %in% names(args)) args$col else par("col")
-    pch <- if ("pch" %in% names(args)) args$pch else par("pch")
     # pick out these options
     group.col <- if ("group.col" %in% names(args)) args$group.col else FALSE
     group.pch <- if ("group.pch" %in% names(args)) args$group.pch else FALSE
     # reorder if necessary
-    if (!group.col) args$col <- unlist(split(rep(col, length.out=n), mf[-response]))
-    if (!group.pch) args$pch <- unlist(split(rep(pch, length.out=n), mf[-response]))
+    if ("col" %in% names(args) && !group.col)
+        args$col <- unlist(split(rep(args$col, length.out=n), mf[-response]))
+    if ("pch" %in% names(args) && !group.pch)
+        args$pch <- unlist(split(rep(args$pch, length.out=n), mf[-response]))
 
     if (!missing(subset)) {
         s <- eval(subset.expr, data, parent.frame())
