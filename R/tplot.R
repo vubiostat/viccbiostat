@@ -37,7 +37,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
 
     # set y scale
     if (is.null(ylim)) {
-        r <- range(groups[is.finite(groups)])
+        r <- range(groups, na.rm=TRUE, finite=TRUE)
         pm <- diff(r) / 20
         ylim <- r + pm * c(-1,1)
     }

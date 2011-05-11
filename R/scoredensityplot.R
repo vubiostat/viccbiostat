@@ -5,8 +5,8 @@ scoredensityplot <- function(x, y, z=NULL, main=NULL, legend=NULL, boxplots=TRUE
 
     xm <- cbind(result$density.x$x, result$density.y$x)
     ym <- cbind(result$density.x$y, result$density.y$y)
-    xlim <- if (missing(xlim)) range(xm[is.finite(xm)]) else xlim
-    ylim <- if (missing(ylim)) range(ym[is.finite(ym)]) else ylim
+    xlim <- if (missing(xlim)) range(xm, na.rm=TRUE, finite=TRUE) else xlim
+    ylim <- if (missing(ylim)) range(ym, na.rm=TRUE, finite=TRUE) else ylim
 
     if (boxplots) {
         if (split.screen) {
