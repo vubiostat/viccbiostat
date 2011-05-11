@@ -1,4 +1,4 @@
-#include <Rmath.h>
+#include <R.h>
 
 double _entropy(double x) {
     if (x == 0.0 || x == 1.0)

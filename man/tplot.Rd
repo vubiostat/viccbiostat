@@ -44,7 +44,7 @@ tplot(x, \dots)
   \item{xlab}{a label for the x axis, defaults to nothing.}
   \item{ylab}{a label for the y axis, defaults to nothing.}
   \item{col}{color code or name, see \code{\link{colors}}, \code{\link{palette}}.  Used for the dots.}
-  \item{group.col}{a logical value indicating whether values in \code{col} correspond to individual values or groups of values.}
+  \item{group.col}{a logical value indicating whether values in \code{col} correspond to individual values (\code{FALSE}) or groups of values (\code{TRUE}).}
   \item{boxcol}{colors to be used to colour the bodies of the box plots.}
   \item{boxborder}{colors for the outlines of the boxplots.}
   \item{pch}{character or integer code for kind of points, see \code{\link{points.default}}.}
