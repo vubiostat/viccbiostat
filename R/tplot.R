@@ -28,7 +28,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
 
     ng <- length(groups) # number of groups
     l <- sapply(groups, length) # size of each group
-    g <- rep(1:ng, l) # groups as.numeric
+    g <- factor(rep(1:ng, l), levels=1:ng, labels=names(groups)) # groups as.numeric
     nv <- sum(l) # total count
 
     if (is.null(at)) at <- 1:ng
@@ -224,6 +224,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
             do.call("localTitle", c(list(main=main, sub=sub, xlab=xlab, ylab=ylab), pars))
     }
 
+    names(out) <- names(groups)
     invisible(out)
 }
 
