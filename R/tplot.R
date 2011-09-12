@@ -127,7 +127,10 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
     how.many.so.far <- function(g) {
         out <- NULL
         u <- unique(g)
-        for (i in 1:length(u)) out[which(g==u[i])] <- 1:sum(g==u[i])
+        for (i in 1:length(u)) {
+            j <- g==u[i]
+            out[which(j)] <- 1:sum(j)
+        }
         out
     }
     # turns the values in each group into their plotting points
