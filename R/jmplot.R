@@ -19,6 +19,8 @@ jmplot <- function(x, y, levels, names=NULL, xlim=NULL, ylim=NULL, log="", main=
 
     # Save plotting parameters
     pars <- par(no.readonly=TRUE)
+    # Restore plotting parameters
+    on.exit(par(pars))
     mar <- pars$mar
     # Set the layout
     layout(matrix(c(1,3,0,2), 2), widths=c(xratio,1-xratio), heights=c(1-yratio,yratio))
@@ -62,9 +64,6 @@ jmplot <- function(x, y, levels, names=NULL, xlim=NULL, ylim=NULL, log="", main=
         localTitle(sub=sub, xlab=xlab, ylab=ylab, ...)
         localTitle(main=main, outer=TRUE, ...)
     }
-
-    # Restore plotting parameters
-    par(pars)
 }
 
 #x <- rexp(100)
