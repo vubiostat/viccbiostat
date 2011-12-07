@@ -1,9 +1,9 @@
-xtplot <- function(x, y, levels, names=NULL, xlim=NULL, ylim=NULL, log="", main=NULL, sub=NULL, xlab=NULL, ylab=NULL, xratio=.8, yratio=xratio, bty="L", ann=par("ann"), axes=TRUE, frame.plot=axes, panel.first=NULL, panel.last=NULL, asp=NA, ...) {
+jmplot <- function(x, y, levels, names=NULL, xlim=NULL, ylim=NULL, log="", main=NULL, sub=NULL, xlab=NULL, ylab=NULL, xratio=.8, yratio=xratio, show.n=FALSE, ann=par("ann"), axes=TRUE, frame.plot=axes, panel.first=NULL, panel.last=NULL, asp=NA, ...) {
 
-    localTplot <- function(..., type="b", horizontal=FALSE, axes) tplot(..., type=type, axes=FALSE, horizontal=horizontal)
-    eliminateTplot <- function(func, ..., type, dist, jit, names, group.col, boxcol, boxborder, group.pch, median.line, mean.line, median.pars, mean.pars, boxplot.pars, show.n, my.gray, axes, frame.plot, add, horizontal) func(...)
+    localTplot <- function(..., type="b", horizontal=FALSE) tplot(..., type=type, axes=FALSE, horizontal=horizontal)
+    eliminateTplot <- function(func, ..., type, dist, jit, names, group.col, boxcol, boxborder, group.pch, median.line, mean.line, median.pars, mean.pars, boxplot.pars, my.gray, axes, frame.plot, add, horizontal) func(...)
 
-    localPlot <- function(xy, ..., lwd) eliminateTplot(plot.xy, xy, "p", bty=bty, ...)
+    localPlot <- function(xy, ..., lwd) eliminateTplot(plot.xy, xy, "p", ...)
     localAxis <- function(..., col, bg, pch, cex, lty, lwd) eliminateTplot(axis, ...)
     localBox <- function(..., col, bg, pch, cex, lty, lwd) eliminateTplot(box, ...)
     localWindow <- function(..., col, bg, pch, cex, lty, lwd) eliminateTplot(plot.window, ...)
@@ -35,12 +35,12 @@ xtplot <- function(x, y, levels, names=NULL, xlim=NULL, ylim=NULL, log="", main=
 
     # plot X distribution on top
     par(mar=c(0,mar[2],0,0))
-    localTplot(x~levels, ylim=xlim, horizontal=TRUE, ...)
+    localTplot(x~levels, ylim=xlim, horizontal=TRUE, show.n=FALSE, ...)
     if (axes) localAxis(side=2, at=1:nlevels(levels), labels=names, ...)
 
     # plot Y distribution on right
     par(mar=c(mar[1],0,0,0))
-    localTplot(y~levels, ylim=ylim, ...)
+    localTplot(y~levels, ylim=ylim, show.n=show.n, ...)
     if (axes) localAxis(side=1, at=1:nlevels(levels), labels=names, ...)
 
     # plot X-Y points
@@ -70,4 +70,4 @@ xtplot <- function(x, y, levels, names=NULL, xlim=NULL, ylim=NULL, log="", main=
 #x <- rexp(100)
 #y <- rexp(100)
 #levels <- as.factor(sample(c("Male","Female"), 100, TRUE))
-#xtplot(x, y, levels, col=levels)
+#jmplot(x, y, levels, col=levels)

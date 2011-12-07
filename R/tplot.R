@@ -5,6 +5,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
     localBox <- function(..., bg, cex, lty, lwd) box(...)
     localWindow <- function(..., bg, cex, lty, lwd) plot.window(...)
     localTitle <- function(..., bg, cex, lty, lwd) title(...)
+    localMtext <- function(..., bg, cex, lty, lwd) mtext(...)
 
     args <- list(x, ...)
     namedargs <- if (!is.null(attributes(args)$names))
@@ -57,6 +58,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
     if ((length(type) > 1) && (length(type) != ng))
         warning("length of 'type' does not match the number of groups")
     type <- rep(type, length.out=ng)
+    #type[l > 1000] <- "b"
 
     # Handle default colors
     defcols <- c(my.gray, par("col"))
@@ -128,7 +130,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
         out <- NULL
         u <- unique(g)
         for (i in 1:length(u)) {
-            j <- g==u[i]
+            j <- g == u[i]
             out[which(j)] <- 1:sum(j)
         }
         out
@@ -215,7 +217,7 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
     }
     # optional sample sizes
     if (show.n)
-        do.call("localAxis", c(list(side=3+horizontal, at=at, labels=paste("n=", l, sep="")), pars, list(mgp=c(3,.5,0), xaxt='s', yaxt='s')))
+        do.call("localMtext", c(list(paste("n=", l, sep=""), side=3+horizontal, at=at), pars, list(xaxt='s', yaxt='s')))
     # add bounding box
     if (frame.plot)
         do.call("localBox", pars)
