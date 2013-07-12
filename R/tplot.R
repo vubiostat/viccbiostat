@@ -75,9 +75,10 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
         warning("length of 'boxborder' does not match the number of groups")
     boxborder <- rep(boxborder, length.out=ng)
 
-    if (!is.null(boxcol) && length(boxcol) != ng)
+    if (!is.null(boxcol) && length(boxcol) != ng) {
         warning("length of 'boxcol' does not match the number of groups")
-    boxcol <- rep(boxcol, length.out=ng)
+        boxcol <- rep(boxcol, length.out=ng)
+    }
 
     # Use colors by group
     if (group.col) {
