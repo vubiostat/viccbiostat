@@ -1,11 +1,13 @@
 tplot <- function(x, ...) UseMethod("tplot")
 
 tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NULL, ylim=NULL, main=NULL, sub=NULL, xlab=NULL, ylab=NULL, col=NULL, group.col=FALSE, boxcol=NULL, boxborder=NULL, pch=par("pch"), group.pch=FALSE, median.line=FALSE, mean.line=FALSE, median.pars=list(col=par("col")), mean.pars=median.pars, boxplot.pars=NULL, show.n=FALSE, my.gray=gray(0.75), ann=par("ann"), axes=TRUE, frame.plot=axes, add=FALSE, at=NULL, horizontal=FALSE, panel.first=NULL, panel.last=NULL) {
-    localAxis <- function(..., bg, cex, lty, lwd) axis(..., lwd=0)
-    localBox <- function(..., bg, cex, lty, lwd) box(...)
-    localWindow <- function(..., bg, cex, lty, lwd) plot.window(...)
-    localTitle <- function(..., bg, cex, lty, lwd) title(...)
-    localMtext <- function(..., bg, cex, lty, lwd) mtext(...)
+
+    localPoints <- function(..., tick) points(...)
+    localAxis <- function(..., bg, cex, lty, lwd) axis(...)
+    localBox <- function(..., bg, cex, lty, lwd, tick) box(...)
+    localWindow <- function(..., bg, cex, lty, lwd, tick) plot.window(...)
+    localTitle <- function(..., bg, cex, lty, lwd, tick) title(...)
+    localMtext <- function(..., bg, cex, lty, lwd, tick) mtext(...)
 
     args <- list(x, ...)
     namedargs <- if (!is.null(attributes(args)$names))
@@ -174,26 +176,30 @@ tplot.default <- function(x, ..., type="d", dist=NULL, jit=0.01, names, xlim=NUL
 
         if (type[i] == "bd") { # dots behind
             if (horizontal)
-                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), pars))
+                do.call("localPoints", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), pars))
             else
-                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), pars))
+                do.call("localPoints", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), pars))
         }
+
         if (type[i] %in% c("bd", "b")) { # boxplot in front
             boxplotout <- do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, col=boxcol[i], border=boxborder[i], outline=FALSE, horizontal=horizontal), boxplot.pars))
             toplot <- (y > boxplotout$stats[5,]) | (y < boxplotout$stats[1,])
             if (horizontal)
-                do.call("points", c(list(x=y[toplot], y=x[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
+                do.call("localPoints", c(list(x=y[toplot], y=x[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
             else
-                do.call("points", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
+                do.call("localPoints", c(list(x=x[toplot], y=y[toplot], pch=pch[[i]][toplot], col=col[[i]][toplot]), pars))
         }
+
         if (type[i] == "db") # boxplot behind
             do.call("boxplot", c(list(x=y, at=at[i], add=TRUE, axes=FALSE, col=boxcol[i], border=boxborder[i], outline=FALSE, horizontal=horizontal), boxplot.pars))
+
         if (type[i] %in% c("db", "d")) { # dots in front
             if (horizontal)
-                do.call("points", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), pars))
+                do.call("localPoints", c(list(x=y, y=x, pch=pch[[i]], col=col[[i]]), pars))
             else
-                do.call("points", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), pars))
+                do.call("localPoints", c(list(x=x, y=y, pch=pch[[i]], col=col[[i]]), pars))
         }
+
         if (mean.line[i]) { # mean line
             if (horizontal)
                 do.call("lines", c(list(rep(mean(y), 2), at[i]+Lme), mean.pars))
