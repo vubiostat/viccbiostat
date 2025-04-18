@@ -2,9 +2,9 @@ Package: VICCBiostat
 Version: 1.2
 Date: 2010-12-02
 Title: Miscellaneous Functions
-Author: Will Gray <w.gray@vanderbilt.edu>
-Maintainer: Will Gray <w.gray@vanderbilt.edu>
+Author: Will Gray <w.gray@vumc.org>
+Maintainer: Will Gray <w.gray@vumc.org>
 Suggests: stats, combinat, grDevices, RColorBrewer, e1071, nlme
-Description: Useful functions from the Vanderbilt-Ingram Cancer Biostatistics Center.
+Description: Random useful biostatistics functions
 License: GPL-2
-URL: http://biostat.mc.vanderbilt.edu/ViccBiostatR
+URL: https://github.com/vubiostat/viccbiostat
